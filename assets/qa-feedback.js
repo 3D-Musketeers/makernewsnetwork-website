@@ -125,7 +125,7 @@
     '#' + PREFIX + '-btn{',
     '  position:fixed;bottom:24px;right:24px;z-index:999990;',
     '  display:flex;align-items:center;gap:8px;',
-    '  background:#e67e22;color:#fff;border:2px solid #d35400;',
+    '  background:#a8431a;color:#fff;border:2px solid #8a3614;',
     '  padding:10px 18px;border-radius:8px;cursor:pointer;',
     '  font:700 14px "Share Tech Mono",monospace;',
     '  box-shadow:0 4px 16px rgba(0,0,0,.35);',
@@ -153,7 +153,7 @@
     /* panel */
     '#' + PREFIX + '-panel{',
     '  background:#1a1a2e;color:#e0e0e0;',
-    '  border:2px solid #e67e22;border-radius:12px;',
+    '  border:2px solid #a8431a;border-radius:12px;',
     '  width:100%;max-width:560px;',
     '  font:14px/1.5 "Share Tech Mono",monospace;',
     '  box-shadow:0 8px 32px rgba(0,0,0,.5);',
@@ -161,7 +161,7 @@
 
     /* banner */
     '.' + PREFIX + '-banner{',
-    '  background:repeating-linear-gradient(135deg,#e67e22,#e67e22 10px,#d35400 10px,#d35400 20px);',
+    '  background:repeating-linear-gradient(135deg,#a8431a,#a8431a 10px,#8a3614 10px,#8a3614 20px);',
     '  color:#fff;text-align:center;padding:10px 16px;',
     '  font:700 13px "Share Tech Mono",monospace;',
     '  border-radius:10px 10px 0 0;letter-spacing:.5px;',
@@ -180,11 +180,11 @@
     '}',
     '.' + PREFIX + '-tab:first-child{border-radius:6px 0 0 6px;}',
     '.' + PREFIX + '-tab:last-child{border-radius:0 6px 6px 0;}',
-    '.' + PREFIX + '-tab.active{background:#e67e22;color:#fff;border-color:#e67e22;}',
+    '.' + PREFIX + '-tab.active{background:#a8431a;color:#fff;border-color:#a8431a;}',
 
     /* form fields */
     '.' + PREFIX + '-field{margin-bottom:14px;}',
-    '.' + PREFIX + '-field label{display:block;margin-bottom:4px;color:#e67e22;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}',
+    '.' + PREFIX + '-field label{display:block;margin-bottom:4px;color:#a8431a;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}',
     '.' + PREFIX + '-field input,' +
     '.' + PREFIX + '-field select,' +
     '.' + PREFIX + '-field textarea{',
@@ -195,25 +195,25 @@
     '}',
     '.' + PREFIX + '-field input:focus,' +
     '.' + PREFIX + '-field select:focus,' +
-    '.' + PREFIX + '-field textarea:focus{border-color:#e67e22;}',
+    '.' + PREFIX + '-field textarea:focus{border-color:#a8431a;}',
     '.' + PREFIX + '-field textarea{resize:vertical;min-height:90px;}',
 
     /* buttons */
     '.' + PREFIX + '-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}',
     '.' + PREFIX + '-btn-primary{',
-    '  background:#e67e22;color:#fff;border:none;padding:10px 20px;',
+    '  background:#a8431a;color:#fff;border:none;padding:10px 20px;',
     '  border-radius:6px;cursor:pointer;font:700 13px "Share Tech Mono",monospace;',
     '  transition:background .15s;',
     '}',
-    '.' + PREFIX + '-btn-primary:hover{background:#d35400;}',
+    '.' + PREFIX + '-btn-primary:hover{background:#8a3614;}',
     '.' + PREFIX + '-btn-primary:disabled{background:#7f8c8d;cursor:not-allowed;}',
     '.' + PREFIX + '-btn-secondary{',
-    '  background:transparent;color:#e67e22;border:1px solid #e67e22;',
+    '  background:transparent;color:#a8431a;border:1px solid #a8431a;',
     '  padding:10px 20px;border-radius:6px;cursor:pointer;',
     '  font:700 13px "Share Tech Mono",monospace;',
     '  transition:background .15s,color .15s;',
     '}',
-    '.' + PREFIX + '-btn-secondary:hover{background:#e67e22;color:#fff;}',
+    '.' + PREFIX + '-btn-secondary:hover{background:#a8431a;color:#fff;}',
     '.' + PREFIX + '-btn-danger{',
     '  background:transparent;color:#c0392b;border:1px solid #c0392b;',
     '  padding:10px 20px;border-radius:6px;cursor:pointer;',
@@ -235,7 +235,7 @@
     '  background:#16213e;border:1px solid #333;border-radius:8px;',
     '  padding:14px 16px;margin-bottom:10px;position:relative;',
     '}',
-    '.' + PREFIX + '-list-item:hover{border-color:#e67e22;}',
+    '.' + PREFIX + '-list-item:hover{border-color:#a8431a;}',
     '.' + PREFIX + '-li-url{font-size:11px;color:#888;word-break:break-all;margin-bottom:4px;}',
     '.' + PREFIX + '-li-desc{margin-bottom:6px;}',
     '.' + PREFIX + '-li-meta{font-size:11px;color:#888;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}',

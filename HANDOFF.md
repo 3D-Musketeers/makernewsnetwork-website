@@ -1,6 +1,6 @@
 # HANDOFF - makernewsnetwork-website
 
-Last updated: 2026-11-05 (session 1, step 6: page scaffold tool and privacy wording). Written for a reader who has
+Last updated: 2026-11-05 (session 1, step 7 on branch claude/build-out-2: share image, Open Graph tags, Lighthouse baseline). Written for a reader who has
 seen nothing else. Rule: after every meaningful step, update this file, commit it with the work, push.
 Claude never pushes to `main`; it pushes `claude/*` branches and opens a pull request for Grant.
 
@@ -46,7 +46,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
    the first PR is safe before hosting is set up.
 9. Hosting (Grant, 2026-11-05): makernewsnetwork.com is owned. For now the site is built on the existing
    3DM cPanel account and/or locally. No separate hosting. See the cPanel checklist in section 6a.
-10. Obsidian: undecided, Grant will say. `notes/` stays in the repo meanwhile.
+10. Obsidian (Grant, 2026-11-05): keep `notes/` in the repo for now. Vault-ready format kept so they can move later.
 11. Logo: parked. The ring-mark favicon stays as the placeholder.
 8. Prototype is kept out of search: `<meta name="robots" content="noindex, nofollow">` on every page and
    `robots.txt` disallows all. Remove both at launch.
@@ -82,6 +82,10 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
     post form with counter, pending notice, sign out. Renders with textContent only. Mounted on the review
     template (`#mnn-comments`) and on the new `/sign-in/` page (account state, expired-link messages).
   - `api/config.example.php` grew the DB, APP_URL, AUTH_SECRET, mail, window, OAuth and CRON_KEY settings.
+- Added in step 7 (2026-11-05): `assets/og-default.png` (1200x630 text wordmark share image, rendered with
+  Playwright from the brand tokens; replace when the logo exists), Open Graph + Twitter card tags and a
+  canonical link on every page and both templates, home hero card heading fixed for heading order, QA
+  widget colors moved to the brand ember so its text passes contrast.
 - Added in step 6 (2026-11-05): `tools/new-page.js` scaffolds a review (`review <category> "Title" "Maker"`)
   or an article (`news|explainer|opinion "Headline"`) from `tools/templates/review.html` and
   `tools/templates/article.html`, fills nav/footer and rebuilds the sitemap. New pages carry [placeholders]
@@ -127,13 +131,17 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
   publish id 1 -> ok; users search -> row with signup IP and verification timestamps; restrict then verify
   user 2 -> ok; self-ban -> refused; public list shows 1 and 2 published, 3 gone. Playwright: /moderation/
   accounts tab and the staff view of the review comments render with 0 console errors.
-- Not run: Lighthouse, WCAG tooling, the deploy workflow, .htaccess under real Apache, MySQL (SQLite only),
+- Lighthouse 2026-11-05 (mobile, local static server, after step 7) on home, the review template, /submit/
+  and /standards/: performance 100, accessibility 100, best practices 100, SEO 66 on every page. The only
+  SEO failure is is-crawlable, caused by the intentional noindex; it clears at launch. Before the fix the
+  home page scored accessibility 94 (QA widget button contrast 2.84:1, hero card h3 before any h2).
+- Deploy workflow: first run on main (merge of PR 1) completed successfully through the skip path in 10 s.
+- Not run: WCAG tooling beyond Lighthouse, .htaccess under real Apache, MySQL (SQLite only),
   a real Google or Discord OAuth round trip (needs client ids and a public callback URL).
 
 ## 6. What is left, in order
 
-1. Grant merges the first pull request (`claude/initial-site` into `main`). More commits keep landing on
-   that branch until it is merged.
+1. DONE 2026-11-05: PR 1 merged into `main` (merge commit da34623). Later work goes on `claude/*` branches with a PR each.
 2. DONE 2026-11-05: gate page, host-aware .htaccess, QA widget on every page, sitemap tool, verify-live.
 3. cPanel setup by Grant (section 6a), then add the three FTP secrets and re-run the deploy workflow, then
    `node tools/verify-live.js --qa` must be ALL PASS.
@@ -144,8 +152,9 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
    `api/config.example.php`. Then a real round trip on qa. Moderation view: DONE (step 5). Still to build:
    display-name editing, a staff "lift restriction" email to the reader, and the privacy-policy wording check
    against what is actually stored (email, display name, provider id, signup IP, timestamps, comment text).
-5. Real logo (parked), OG image 1200x630, team bios on /about/, corrections wording on /standards/, GA4
-   property, open robots.txt and remove noindex from every page at launch.
+5. Real logo (parked; the share image and favicon are placeholders), team bios on /about/, corrections
+   wording on /standards/, GA4 measurement id from Grant and the snippet in every page head, open robots.txt
+   and remove noindex from every page at launch, then re-run Lighthouse (SEO should reach 100).
 6. (Moved to 4a: comments and accounts are built; server setup and moderation view remain.)
 7. `api/config.php` on the server, one real test submission, decide whether submissions also go to Flowlu.
 8. First real review draft on the template to shake out the data table before buying test equipment.
@@ -190,7 +199,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 ## 7. Open questions for Grant
 
 1. ANSWERED: hosting on the 3DM cPanel account for now, plus local. DNS details still needed (section 6a step 3).
-2. Obsidian: pending, Grant will say.
+2. ANSWERED: notes stay in the repo for now.
 3. The 3DM cPanel account has a WordPress database `wp470` labeled "3dmreviews". Anything MNN should inherit?
 4. Logo: PARKED.
 5. Carried over from the docs: Discord login method, download manager, filament blocked metrics now or
@@ -204,7 +213,7 @@ git clone https://github.com/3D-Musketeers/makernewsnetwork-website.git
 cd makernewsnetwork-website
 ```
 
-If the first PR is not merged yet: `git checkout claude/initial-site`.
+Unmerged work, if any, is on a `claude/*` branch with an open pull request; `main` is the merged state.
 
 View the site (Node.js required), then open http://localhost:3000/ :
 

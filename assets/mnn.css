@@ -208,7 +208,7 @@ body.nav-open { overflow: hidden; }
 }
 .card:hover { border-color: var(--accent); }
 .card .kicker { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; }
-.card h3 { margin: 0; font-size: 1.15rem; }
+.card h3, .card .card-h { margin: 0; font-size: 1.15rem; font-weight: 700; line-height: 1.15; }
 .card h3 a { color: var(--text); text-decoration: none; }
 .card h3 a::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); }
 .card:hover h3 a { color: var(--accent); }
