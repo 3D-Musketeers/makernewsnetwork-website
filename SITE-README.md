@@ -23,6 +23,7 @@ f79184c and 54ad5e0) and moved here on 2026-11-05.
 | `api/moderation.php`, `moderation/`, `api/cli/make-staff.php` | Staff moderation API and page; CLI to grant the staff role |
 | `gate.html` | Preview gate for the qa. host |
 | `tools/build-sitemap.js`, `tools/verify-live.js` | Sitemap generator and the launch/QA check |
+| `tools/new-page.js`, `tools/templates/` | Scaffold a new review or article page |
 | `api/submit.php` | Reader submission endpoint (email only, honeypot, throttle, no IP stored). Needs `api/config.php` on the server |
 | `tools/check-ascii.js` | House rule: ASCII only. Run before committing |
 | `notes/` | Obsidian-ready notes: consolidated brief, lessons from the 3DM site, build log |

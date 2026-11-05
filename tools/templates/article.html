@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}} | Maker News Network</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<meta name="theme-color" content="#f6f4ef">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://makernewsnetwork.com{{SLUG}}">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/osifont.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/mnn.css">
+<script>(function(){try{var t=localStorage.getItem('mnn-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div data-include="nav"></div>
+<main id="main">
+  <article>
+    <header class="review-head">
+      <div class="wrap wrap-narrow">
+        <p class="eyebrow">{{KIND_LABEL}}</p>
+        <h1>{{TITLE}}</h1>
+        <p class="lede">{{LEDE}}</p>
+        <ul class="review-facts">
+          <li><b>By</b> [author]</li>
+          <li><b>Published</b> <time datetime="{{DATE}}">{{DATE}}</time></li>
+        </ul>
+        <!-- Sponsored banner: unhide only for sponsored content. Above the fold, never fine print. -->
+        <div class="banner" hidden data-sponsored><span aria-hidden="true">!</span><span><b>Sponsored.</b> [Sponsor] paid for this piece. They had no say over any other coverage. <a href="/standards/#disclosure">Our disclosure rules</a>.</span></div>
+        <!-- Corrections go here, at the top, dated: <div class="banner info"><span aria-hidden="true">i</span><span><b>Correction, DATE:</b> what changed.</span></div> -->
+      </div>
+    </header>
+    <div class="wrap wrap-narrow prose">
+      <p>[First paragraph. Say what happened, who said it, and how we know.]</p>
+      <h2>[Section]</h2>
+      <p>[Body. Link every claim to its source. Quote in full context.]</p>
+    </div>
+    <section class="section" id="comments" aria-labelledby="h-comments">
+      <div class="wrap wrap-narrow">
+        <h2 id="h-comments">Comments <span class="tag neutral" aria-live="polite" data-comment-count>0</span></h2>
+        <div id="mnn-comments" data-slug="{{SLUG}}"><noscript><p class="soft">Comments need JavaScript.</p></noscript><p class="soft">Loading comments...</p></div>
+      </div>
+    </section>
+  </article>
+</main>
+
+<div data-include="footer"></div>
+<script src="/assets/mnn.js" defer></script>
+<script src="/assets/qa-feedback.js" defer></script>
+<script src="/assets/mnn-comments.js" defer></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # HANDOFF - makernewsnetwork-website
 
-Last updated: 2026-11-05 (session 1, moderation added; comments system complete pending server setup). Written for a reader who has
+Last updated: 2026-11-05 (session 1, step 6: page scaffold tool and privacy wording). Written for a reader who has
 seen nothing else. Rule: after every meaningful step, update this file, commit it with the work, push.
 Claude never pushes to `main`; it pushes `claude/*` branches and opens a pull request for Grant.
 
@@ -82,6 +82,13 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
     post form with counter, pending notice, sign out. Renders with textContent only. Mounted on the review
     template (`#mnn-comments`) and on the new `/sign-in/` page (account state, expired-link messages).
   - `api/config.example.php` grew the DB, APP_URL, AUTH_SECRET, mail, window, OAuth and CRON_KEY settings.
+- Added in step 6 (2026-11-05): `tools/new-page.js` scaffolds a review (`review <category> "Title" "Maker"`)
+  or an article (`news|explainer|opinion "Headline"`) from `tools/templates/review.html` and
+  `tools/templates/article.html`, fills nav/footer and rebuilds the sitemap. New pages carry [placeholders]
+  that must be replaced before they are linked. The article template has the sponsored banner slot, a
+  corrections slot at the top, and the comments widget. `privacy/index.html` now lists exactly what the
+  account system stores (display name, provider id, timestamps, removed-but-not-erased comments); the
+  markdown draft in newsroom-docs is now behind the HTML and should be updated to match.
 - Added in step 5 (2026-11-05), MODERATION: `api/moderation.php` (staff only: list held/published/removed
   comments and accounts with search; publish/remove a comment; mark an account verified, restricted, banned
   or new; cannot act on own account; banning kills sessions), `/moderation/` page (tabs, search, actions;
