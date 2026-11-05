@@ -1,6 +1,6 @@
 # HANDOFF - makernewsnetwork-website
 
-Last updated: 2026-11-05 (session 1, step 6: page scaffold tool and privacy wording). Written for a reader who has
+Last updated: 2026-11-05 (session 1, PR 1 merged to main; work continues on branch claude/build-out-2). Written for a reader who has
 seen nothing else. Rule: after every meaningful step, update this file, commit it with the work, push.
 Claude never pushes to `main`; it pushes `claude/*` branches and opens a pull request for Grant.
 
@@ -46,7 +46,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
    the first PR is safe before hosting is set up.
 9. Hosting (Grant, 2026-11-05): makernewsnetwork.com is owned. For now the site is built on the existing
    3DM cPanel account and/or locally. No separate hosting. See the cPanel checklist in section 6a.
-10. Obsidian: undecided, Grant will say. `notes/` stays in the repo meanwhile.
+10. Obsidian (Grant, 2026-11-05): keep `notes/` in the repo for now. Vault-ready format kept so they can move later.
 11. Logo: parked. The ring-mark favicon stays as the placeholder.
 8. Prototype is kept out of search: `<meta name="robots" content="noindex, nofollow">` on every page and
    `robots.txt` disallows all. Remove both at launch.
@@ -132,8 +132,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 
 ## 6. What is left, in order
 
-1. Grant merges the first pull request (`claude/initial-site` into `main`). More commits keep landing on
-   that branch until it is merged.
+1. DONE 2026-11-05: PR 1 merged into `main` (merge commit da34623). Later work goes on `claude/*` branches with a PR each.
 2. DONE 2026-11-05: gate page, host-aware .htaccess, QA widget on every page, sitemap tool, verify-live.
 3. cPanel setup by Grant (section 6a), then add the three FTP secrets and re-run the deploy workflow, then
    `node tools/verify-live.js --qa` must be ALL PASS.
@@ -190,7 +189,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 ## 7. Open questions for Grant
 
 1. ANSWERED: hosting on the 3DM cPanel account for now, plus local. DNS details still needed (section 6a step 3).
-2. Obsidian: pending, Grant will say.
+2. ANSWERED: notes stay in the repo for now.
 3. The 3DM cPanel account has a WordPress database `wp470` labeled "3dmreviews". Anything MNN should inherit?
 4. Logo: PARKED.
 5. Carried over from the docs: Discord login method, download manager, filament blocked metrics now or
@@ -204,7 +203,7 @@ git clone https://github.com/3D-Musketeers/makernewsnetwork-website.git
 cd makernewsnetwork-website
 ```
 
-If the first PR is not merged yet: `git checkout claude/initial-site`.
+Unmerged work, if any, is on a `claude/*` branch with an open pull request; `main` is the merged state.
 
 View the site (Node.js required), then open http://localhost:3000/ :
 
