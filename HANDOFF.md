@@ -1,6 +1,6 @@
 # HANDOFF - makernewsnetwork-website
 
-Last updated: 2026-11-05 (session 1, step 3 of the static build-out done). Written for a reader who has
+Last updated: 2026-11-05 (session 1, comments and accounts system built and tested locally). Written for a reader who has
 seen nothing else. Rule: after every meaningful step, update this file, commit it with the work, push.
 Claude never pushes to `main`; it pushes `claude/*` branches and opens a pull request for Grant.
 
@@ -64,6 +64,24 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
   repointed to `qa.makernewsnetwork.com` and this repo. Not yet included on any page.
 - `.github/workflows/deploy.yml` FTPS deploy on push to `main`, self-skipping without secrets.
 - `favicon.svg` placeholder ring mark. Real logo still a TODO (parked by Grant).
+- Added in step 4 (2026-11-05), COMMENTS AND ACCOUNTS, per `newsroom-docs/product/comment-auth-system.md`:
+  - `api/lib/bootstrap.php`: config, PDO (MySQL on cPanel or SQLite locally, schema auto-created), JSON
+    helpers, DB-backed sessions (cookie `mnn_session`, only the SHA-256 of the token is stored), single-use
+    expiring tokens (hashed), windowed rate limits, mail (or a dev log file), user state helpers.
+  - `api/auth.php`: email magic link (`request-link`, `verify`), second verification (`second`), `me`, `logout`.
+    Signup captures the IP. First verification schedules the second one at a random time 1 to 24 h later.
+  - `api/oauth.php`: Google and Discord authorization-code flow (state signed with AUTH_SECRET, provider
+    email must be verified, links to an existing email account instead of duplicating). Hidden until the
+    client ids are configured (returns 503).
+  - `api/comments.php`: list (published for all, plus the author's own pending), post (needs session; new
+    accounts -> pending, fully verified -> published; restricted/banned refused), remove (own, or staff).
+    Plain text only, 2 to 3000 chars, 1 per 20 s and 20 per hour per user.
+  - `api/cron/second-verification.php`: sends the second link when due, restricts accounts that ignore it
+    for SECOND_GRACE_DAYS, cleans expired tokens and sessions. CLI or HTTP with ?key=CRON_KEY.
+  - `assets/mnn-comments.js`: the widget. Signed-out: email link box + Google + Discord buttons. Signed-in:
+    post form with counter, pending notice, sign out. Renders with textContent only. Mounted on the review
+    template (`#mnn-comments`) and on the new `/sign-in/` page (account state, expired-link messages).
+  - `api/config.example.php` grew the DB, APP_URL, AUTH_SECRET, mail, window, OAuth and CRON_KEY settings.
 - Added in step 3 (2026-11-05): `gate.html` preview gate (cookie `mnn_preview_access`, word "layerline",
   soft gate only), host-aware `.htaccess` (gate and QA feedback endpoint only on qa.*, www to apex 301,
   private files 404, PHP only under /api, no-cache on QA), `assets/qa-feedback.js` included on every page
@@ -82,7 +100,17 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 - `node tools/verify-live.js http://localhost:3112`: ALL PASS (sitemap 10 urls, every page 200 with one h1,
   nav+footer pre-filled, title, description, ASCII; assets and robots serve; unknown path 404). Host rules
   are skipped on localhost; run with --qa once qa.makernewsnetwork.com exists.
-- Not run: Lighthouse, WCAG tooling, the deploy workflow, .htaccess under real Apache.
+- Comments and accounts, end to end under `php -S` with SQLite and a mail log file (window set to 0 h so
+  the cron fires at once): me -> null; request-link -> new account, mail logged; verify -> 302 to the next
+  path and a session; reusing the link -> 302 to /sign-in/?expired=1; me -> status new, second_pending;
+  post -> pending; author sees it, anonymous list is empty; second post within 20 s -> 429; cron -> "sent 1";
+  second link -> 302 /sign-in/?second=done, reuse -> second=expired; me -> verified; anonymous list now shows
+  the held comment as published; new post -> published at once; remove -> ok; bad slug -> 400; OAuth without
+  client id -> 503; cron over HTTP with wrong key -> 500 (config missing CRON_KEY in that run) and right key
+  -> ok; 4th sign-in link for one email inside 15 min -> 429; logout -> me null; post signed out -> 401.
+  Playwright: review page comments block and /sign-in/ render with 0 console errors.
+- Not run: Lighthouse, WCAG tooling, the deploy workflow, .htaccess under real Apache, MySQL (SQLite only),
+  a real Google or Discord OAuth round trip (needs client ids and a public callback URL).
 
 ## 6. What is left, in order
 
@@ -92,11 +120,16 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 3. cPanel setup by Grant (section 6a), then add the three FTP secrets and re-run the deploy workflow, then
    `node tools/verify-live.js --qa` must be ALL PASS.
 4. `api/qa-feedback-config.php` and `api/config.php` created by Grant on the server (templates in `api/`).
+4a. DONE 2026-11-05 (code): comments and accounts. Still needed on the server: a MySQL database and user
+   (cPanel > MySQL Databases), the DB_* lines in `api/config.php`, a cron job every 15 minutes running
+   `php .../api/cron/second-verification.php`, and Google + Discord OAuth apps with the redirect URIs from
+   `api/config.example.php`. Then a real round trip on qa. Also still to build: a staff moderation view
+   (today staff can only remove via the widget), a "forgot which email" path, display-name editing, and the
+   privacy-policy wording check against what is actually stored (email, display name, provider id,
+   signup IP, timestamps, comment text).
 5. Real logo (parked), OG image 1200x630, team bios on /about/, corrections wording on /standards/, GA4
    property, open robots.txt and remove noindex from every page at launch.
-6. Comment and account system per `newsroom-docs/product/comment-auth-system.md`: Google + Discord OAuth,
-   email magic link, signup IP capture, randomized second verification 1 to 24 h later, first comments held
-   until it clears, staff badge, moderation. Needs MySQL on cPanel. Privacy policy must be live first.
+6. (Moved to 4a: comments and accounts are built; server setup and moderation view remain.)
 7. `api/config.php` on the server, one real test submission, decide whether submissions also go to Flowlu.
 8. First real review draft on the template to shake out the data table before buying test equipment.
 9. Legal: attorney review of terms and privacy, DMCA designated-agent filing at copyright.gov (Grant files),
@@ -119,11 +152,20 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
    and nothing above it. Never reuse the 3DM deploy account: it is scoped to the 3DM folder.
 5. GitHub > makernewsnetwork-website > Settings > Secrets and variables > Actions: add `FTP_HOST` (the
    server hostname 3DM already uses), `FTP_USERNAME`, `FTP_PASSWORD`. Then Actions > Deploy > Run workflow.
-6. In cPanel File Manager, inside the qa folder, create `api/config.php` from `api/config.example.php`
-   (three defines) and `api/qa-feedback-config.php` from its example with a fine-grained GitHub PAT that has
-   Issues read+write on this repo only. Agents never type tokens; Grant does.
-7. Tell Claude "qa is up". Claude runs `node tools/verify-live.js --qa`, opens the gate page, files one
-   test issue through the widget, and sends one test submission.
+6. cPanel > MySQL Databases: create database `<user>_mnn` and a user with ALL privileges on it.
+7. In cPanel File Manager, inside the qa folder, create `api/config.php` from `api/config.example.php`
+   (every define, including DB_*, APP_URL = https://qa.makernewsnetwork.com, a 64-hex AUTH_SECRET, CRON_KEY)
+   and `api/qa-feedback-config.php` from its example with a fine-grained GitHub PAT that has Issues
+   read+write on this repo only. Agents never type tokens; Grant does.
+8. cPanel > Cron Jobs: every 15 minutes, command
+   `/usr/local/bin/php /home/<user>/qa.makernewsnetwork.com/api/cron/second-verification.php >/dev/null 2>&1`
+9. Optional now, needed before launch: Google OAuth client (console.cloud.google.com, Web application,
+   redirect URI https://qa.makernewsnetwork.com/api/oauth.php?provider=google) and a Discord application
+   (discord.com/developers, OAuth2 redirect https://qa.makernewsnetwork.com/api/oauth.php?provider=discord).
+   Paste the ids and secrets into `api/config.php`. Add the production URIs later.
+10. Tell Claude "qa is up". Claude runs `node tools/verify-live.js --qa`, opens the gate page, files one
+   test issue through the widget, sends one test submission, and walks one account through both
+   verification emails and a comment.
 
 ## 7. Open questions for Grant
 
