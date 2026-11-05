@@ -1,0 +1,26 @@
+# Maker News Network - server rules (starter; mirrors the hardened rules on 3dmusketeers.com)
+Options -Indexes
+AddDefaultCharset UTF-8
+ErrorDocument 404 /404.html
+
+RewriteEngine On
+
+# Private files never served: notes, docs, tools, repo plumbing, examples, config
+RewriteRule ^(\.git|\.github|\.claude|tools|notes)(/|$) - [R=404,L]
+RewriteRule \.(md|example|log|sql|zip|tar|gz|7z|rar|bak)$ - [NC,R=404,L]
+RewriteRule ^api/.*config.*\.php$ - [R=404,L]
+
+# PHP only runs inside /api
+RewriteRule ^api/ - [L]
+RewriteRule \.(php[0-9]?|phtml|phar|phps)(/|$) - [NC,R=404,L]
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always unset X-Powered-By
+  <FilesMatch "\.(css|js|woff2|ttf|svg|png|jpg|webp)$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+</IfModule>

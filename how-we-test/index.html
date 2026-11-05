@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How we test | Maker News Network</title>
+<meta name="description" content="The Maker News Network testing methodology: printers, filament, scanners, CNC and lasers. Same protocol every time, data separated from opinion, re-tested at six months.">
+<meta name="theme-color" content="#f6f4ef">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/osifont.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/mnn.css">
+<script>(function(){try{var t=localStorage.getItem('mnn-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div data-include="nav"><!--inline-start-->
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Maker News Network home">Maker News <span class="brand-2">Network</span></a>
+    <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menu</button>
+    <nav class="site-nav" id="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="/reviews/">Reviews</a></li>
+        <li><a href="/news/">News</a></li>
+        <li><a href="/how-we-test/">How we test</a></li>
+        <li><a href="/standards/">Standards</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/submit/">Send a tip</a></li>
+      </ul>
+      <div class="nav-tools">
+        <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">
+          <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v13A6.5 6.5 0 0 0 8 1.5z" fill="currentColor"/></svg>
+          <span class="theme-label">Dark</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<!--inline-end--></div>
+<main id="main">
+  <section class="hero">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">How we test</p>
+      <h1>Eliminate every variable except the machine</h1>
+      <p class="lede">Same reference materials, same test files, same fixed lighting, same reference objects, same ambient-condition log, regardless of who runs the test or where. Our full procedures will be published so a reader could reproduce them.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap wrap-narrow prose">
+      <h2>What every review has in common</h2>
+      <ol class="principles">
+        <li><h3>A data section built from measurements only</h3><p>Anything that can be measured is recorded as-is: dimensions, decibels, watts, HRC, pass or fail on a standard print.</p></li>
+        <li><h3>A verdict section built from judgment</h3><p>Ease of setup, software, feel, recommendation. Opinion, labeled as opinion, in its own section.</p></li>
+        <li><h3>A score per metric, never an overall score</h3><p>Each metric gets a 1 to 10 next to its number. We do not blend them into one rating. If that ever changes, we will say so here.</p></li>
+        <li><h3>An initial review and a six-month follow-up</h3><p>Reliability, wear and firmware drift re-checked after real use. Almost nobody does this; we think it matters most.</p></li>
+        <li><h3>Published test files</h3><p>The exact 3MF, G-code, LightBurn or scan data we used, so you can load the same thing on your own machine.</p></li>
+      </ol>
+
+      <h2 id="printers">3D printers</h2>
+      <p>Thirteen measured metrics: dimensional accuracy, first-layer quality, overhang performance, bridging performance, stringing and retraction, print speed vs quality, surface finish under two fixed lighting presets, nozzle hardness (Rockwell, for anything marketed as hardened or abrasive-capable), noise level, power draw, functional strength on a load cell, reliability across a 10 to 15 print batch, and cost per print. Ease of setup and slicer experience are opinion-scored in the verdict.</p>
+      <p>Reference materials: one PLA and one PETG batch across every printer in a comparison set, plus a tiered high-temp material matched to how the machine is marketed (ABS/ASA for general high-temp claims, nylon or PC for engineering claims, PEEK or ULTEM for industrial claims). Standard test files: 3DBenchy, XYZ calibration cube, overhang, bridging, stringing and temperature towers, plus a toolchanger test where the machine supports one.</p>
+
+      <h2 id="filament">Filament</h2>
+      <p>Diameter consistency, actual spool weight vs claimed, color and batch consistency, bed adhesion and warping tendency, recommended-temperature accuracy, cost per gram. Tensile and interlayer strength join the list once our dogbone test rig is finished; until then they are listed as not yet measured, not quietly omitted.</p>
+
+      <h2 id="scanners">3D scanners</h2>
+      <p>Built around the VDI/VDE 2634 approach: certified ball bars for long distance accuracy, precision 1-2-3 blocks for small-scale flatness and a shiny-surface test, five repeated scans of the same object for repeatability, regulation billiard balls for fine detail, a video-standard color card for color accuracy, a fixed matte/glossy/dark/metallic sample set, scan time, and mesh quality. A full-surface large-object test uses the same transaxle casting every time, scanned with and without alignment targets. Raw scan data and an in-page 3D viewer ship with each review.</p>
+
+      <h2 id="cnc">CNC</h2>
+      <p>Positioning accuracy and repeatability, circular and contouring accuracy, spindle runout, surface finish, a multi-feature dimensional test, feed rate vs quality, material capability, tool wear, chip and dust collection, noise, rigidity and chatter resistance, reliability, cost per part. Scoped from desktop machines through 5-axis.</p>
+
+      <h2 id="lasers">Lasers</h2>
+      <p>Power verification, positioning accuracy and repeatability, kerf width and cut accuracy, engraving resolution and grayscale reproduction, speed and power vs quality, material capability, relief engraving, focus consistency, safety and enclosure verification, fume extraction effectiveness, reliability, cost per cut or engrave. Diode, CO2 and fiber from day one.</p>
+
+      <h2>Sponsored units</h2>
+      <p>A sponsor does not see results before publication, does not get editorial input, and sponsorship has no bearing on the verdict. A sponsored unit goes through the identical protocol as any other. The review says it is sponsored at the top of the page. <a href="/standards/#disclosure">Full disclosure rules</a>.</p>
+
+      <h2>Status</h2>
+      <p>All five protocols are drafted. No review is published yet. The full procedure documents will be made public under this page when the first review ships, and will change as practice reveals gaps; this page will carry a changelog.</p>
+    </div>
+  </section>
+</main>
+<div data-include="footer"><!--inline-start-->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Maker News Network</h2>
+        <p>Reviews built on measured data, news that checks its sources, and a comment section where real people talk. By makers, for makers.</p>
+        <p><a href="mailto:tips@makernewsnetwork.com">tips@makernewsnetwork.com</a></p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/reviews/">Reviews</a></li>
+          <li><a href="/reviews/#printers">3D printers</a></li>
+          <li><a href="/reviews/#filament">Filament</a></li>
+          <li><a href="/reviews/#scanners">3D scanners</a></li>
+          <li><a href="/reviews/#cnc">CNC</a></li>
+          <li><a href="/reviews/#lasers">Lasers</a></li>
+          <li><a href="/news/">News</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Trust</h2>
+        <ul>
+          <li><a href="/how-we-test/">How we test</a></li>
+          <li><a href="/standards/">Editorial standards</a></li>
+          <li><a href="/standards/#disclosure">Sponsorship and affiliate disclosure</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Take part</h2>
+        <ul>
+          <li><a href="/submit/">Send a tip or request a review</a></li>
+          <li><a href="/submit/#feedback">Site feedback</a></li>
+          <li><a href="https://www.instagram.com/makernewsnetwork" rel="noopener" target="_blank">Instagram</a></li>
+          <li><a href="https://x.com/makernewsnetwork" rel="noopener" target="_blank">X</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>(c) <span data-year>2026</span> Maker News Network. Published by 3D Musketeers, LLC.</span>
+      <span><a href="/terms/">Terms</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="mailto:legal@makernewsnetwork.com">legal@makernewsnetwork.com</a></span>
+    </div>
+  </div>
+  <script>document.querySelectorAll('[data-year]').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+</footer>
+<!--inline-end--></div>
+<script src="/assets/mnn.js" defer></script>
+</body>
+</html>
