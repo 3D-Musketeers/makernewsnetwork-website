@@ -1,18 +1,44 @@
-# Maker News Network - server rules (starter; mirrors the hardened rules on 3dmusketeers.com)
+# Maker News Network - server rules. Mirrors the hardened, host-aware rules on 3dmusketeers.com.
+# One folder can serve both qa.makernewsnetwork.com (gated) and makernewsnetwork.com (open).
 Options -Indexes
 AddDefaultCharset UTF-8
 ErrorDocument 404 /404.html
+ErrorDocument 410 /404.html
 
 RewriteEngine On
 
-# Private files never served: notes, docs, tools, repo plumbing, examples, config
+## Preview gate - qa.* hosts only. Anyone without the cookie goes to gate.html first.
+RewriteCond %{HTTP_HOST} ^qa\. [NC]
+RewriteCond %{HTTP_COOKIE} !mnn_preview_access=granted
+RewriteCond %{REQUEST_URI} !^/gate\.html$
+RewriteCond %{REQUEST_URI} !^/assets/
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_URI} !^/404\.html$
+RewriteCond %{REQUEST_URI} !^/favicon\.svg$
+RewriteRule ^(.*)$ /gate.html?next=%{REQUEST_URI} [L,R=302]
+
+## www -> apex on the live domain
+RewriteCond %{HTTP_HOST} ^www\.makernewsnetwork\.com$ [NC]
+RewriteRule ^ https://makernewsnetwork.com%{REQUEST_URI} [R=301,L]
+
+## Live-only blocks: the gate page and the QA feedback endpoint exist only on qa.*
+RewriteCond %{HTTP_HOST} !^qa\. [NC]
+RewriteRule ^gate\.html$ - [R=404,L]
+RewriteCond %{HTTP_HOST} !^qa\. [NC]
+RewriteRule ^api/qa-feedback\.php(/.*)?$ - [R=404,L]
+
+## Private files never served: notes, docs, tools, repo plumbing, examples, config, archives, logs
 RewriteRule ^(\.git|\.github|\.claude|tools|notes)(/|$) - [R=404,L]
-RewriteRule \.(md|example|log|sql|zip|tar|gz|7z|rar|bak)$ - [NC,R=404,L]
+RewriteRule \.(md|example|log|sql|zip|tar|gz|tgz|7z|rar|bak|ya?ml|json\.tmp)$ - [NC,R=404,L]
 RewriteRule ^api/.*config.*\.php$ - [R=404,L]
 
-# PHP only runs inside /api
+## PHP only runs inside /api; any other script path is 404
 RewriteRule ^api/ - [L]
 RewriteRule \.(php[0-9]?|phtml|phar|phps)(/|$) - [NC,R=404,L]
+
+<FilesMatch "(\.(md|py|sh|ya?ml|bak|old|orig|sql|map|ini|swp|log)$|^\.ftp-deploy-sync-state\.json$|^(error_log|php_errorlog)$)">
+  Require all denied
+</FilesMatch>
 
 <IfModule mod_headers.c>
   Header always set X-Content-Type-Options "nosniff"
@@ -20,7 +46,10 @@ RewriteRule \.(php[0-9]?|phtml|phar|phps)(/|$) - [NC,R=404,L]
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
   Header always unset X-Powered-By
+  # Live host: cache static assets a day. QA host: never cache, so every push shows at once.
+  SetEnvIf Host ^qa\. MNN_QA=1
   <FilesMatch "\.(css|js|woff2|ttf|svg|png|jpg|webp)$">
-    Header set Cache-Control "public, max-age=86400"
+    Header set Cache-Control "public, max-age=86400" env=!MNN_QA
+    Header set Cache-Control "no-cache" env=MNN_QA
   </FilesMatch>
 </IfModule>

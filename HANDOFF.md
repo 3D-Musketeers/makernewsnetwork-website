@@ -1,6 +1,6 @@
 # HANDOFF - makernewsnetwork-website
 
-Last updated: 2026-11-05 (session 1, after the move from the 3DM repo). Written for a reader who has
+Last updated: 2026-11-05 (session 1, step 3 of the static build-out done). Written for a reader who has
 seen nothing else. Rule: after every meaningful step, update this file, commit it with the work, push.
 Claude never pushes to `main`; it pushes `claude/*` branches and opens a pull request for Grant.
 
@@ -44,6 +44,10 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
    raw HTML, hardened .htaccess, secrets only on the server.
 7. Deploy workflow deploys on push to `main` but skips itself until the FTP secrets exist, so merging
    the first PR is safe before hosting is set up.
+9. Hosting (Grant, 2026-11-05): makernewsnetwork.com is owned. For now the site is built on the existing
+   3DM cPanel account and/or locally. No separate hosting. See the cPanel checklist in section 6a.
+10. Obsidian: undecided, Grant will say. `notes/` stays in the repo meanwhile.
+11. Logo: parked. The ring-mark favicon stays as the placeholder.
 8. Prototype is kept out of search: `<meta name="robots" content="noindex, nofollow">` on every page and
    `robots.txt` disallows all. Remove both at launch.
 
@@ -59,7 +63,12 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 - `api/qa-feedback.php` + `assets/qa-feedback.js`: the staff feedback widget from the 3DM rebuild,
   repointed to `qa.makernewsnetwork.com` and this repo. Not yet included on any page.
 - `.github/workflows/deploy.yml` FTPS deploy on push to `main`, self-skipping without secrets.
-- `favicon.svg` placeholder ring mark. Real logo still a TODO.
+- `favicon.svg` placeholder ring mark. Real logo still a TODO (parked by Grant).
+- Added in step 3 (2026-11-05): `gate.html` preview gate (cookie `mnn_preview_access`, word "layerline",
+  soft gate only), host-aware `.htaccess` (gate and QA feedback endpoint only on qa.*, www to apex 301,
+  private files 404, PHP only under /api, no-cache on QA), `assets/qa-feedback.js` included on every page
+  (it exits unless the host is qa.makernewsnetwork.com or localhost), `tools/build-sitemap.js` + generated
+  `sitemap.xml` (10 urls), `tools/verify-live.js` (live, --qa, or a local base URL).
 
 ## 5. Test results (from the 3DM branch build, same files)
 
@@ -67,20 +76,24 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 - Playwright (Chromium) at 1280 light, 1280 dark, 390 phone on home, reviews, review template, standards,
   submit, terms: 0 page errors, 0 console errors. Dark toggle persists in localStorage (`mnn-theme`).
   Phone menu opens and scrolls itself. Submit form rejects a 5-character message client-side.
-- Not run: a PHP server for `api/submit.php`, Lighthouse, WCAG tooling, the deploy workflow.
+- `api/submit.php` under `php -S` (PHP 8.3): short message -> 400 "Please add more detail"; honeypot
+  filled -> 200 ok silently; bad email -> 400; valid payload -> 502 "Mail failed" (expected, no sendmail
+  locally; on cPanel mail() works); GET -> 405; 6 rapid posts -> the 5th and later return 429.
+- `node tools/verify-live.js http://localhost:3112`: ALL PASS (sitemap 10 urls, every page 200 with one h1,
+  nav+footer pre-filled, title, description, ASCII; assets and robots serve; unknown path 404). Host rules
+  are skipped on localhost; run with --qa once qa.makernewsnetwork.com exists.
+- Not run: Lighthouse, WCAG tooling, the deploy workflow, .htaccess under real Apache.
 
 ## 6. What is left, in order
 
-1. Grant merges the first pull request (`claude/initial-site` into `main`).
-2. Hosting: decide addon domain on the existing Namecheap cPanel account vs separate. Register or point
-   makernewsnetwork.com DNS. Create the `qa.makernewsnetwork.com` subdomain and an FTP account scoped to
-   its document root. Add repo secrets FTP_HOST, FTP_USERNAME, FTP_PASSWORD. Re-run the workflow.
-3. Cookie gate page for the QA host (copy the pattern from 3DM `gate.html` + its .htaccess block), host-aware
-   .htaccess (gate only on qa., dev pages 404 on production), include `assets/qa-feedback.js` on every page,
-   create `api/qa-feedback-config.php` on the server with a fine-grained PAT (Issues read+write on this repo).
-4. `tools/verify-live.js` equivalent (gate off on production, 404s, sitemap, robots, GA, caching).
-5. Real logo, OG image 1200x630, team bios on /about/, corrections wording on /standards/, GA4 property,
-   sitemap.xml, open robots.txt and remove noindex from every page.
+1. Grant merges the first pull request (`claude/initial-site` into `main`). More commits keep landing on
+   that branch until it is merged.
+2. DONE 2026-11-05: gate page, host-aware .htaccess, QA widget on every page, sitemap tool, verify-live.
+3. cPanel setup by Grant (section 6a), then add the three FTP secrets and re-run the deploy workflow, then
+   `node tools/verify-live.js --qa` must be ALL PASS.
+4. `api/qa-feedback-config.php` and `api/config.php` created by Grant on the server (templates in `api/`).
+5. Real logo (parked), OG image 1200x630, team bios on /about/, corrections wording on /standards/, GA4
+   property, open robots.txt and remove noindex from every page at launch.
 6. Comment and account system per `newsroom-docs/product/comment-auth-system.md`: Google + Discord OAuth,
    email magic link, signup IP capture, randomized second verification 1 to 24 h later, first comments held
    until it clears, staff badge, moderation. Needs MySQL on cPanel. Privacy policy must be live first.
@@ -92,12 +105,32 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
     pulse pipeline when Reddit answers the commercial-approval application (submitted 2026-08-02).
 11. Add a note to `newsroom-docs/product/tech-stack.md` that the platform changed to static on 2026-11-05.
 
+## 6a. cPanel checklist for Grant (about 20 minutes, same account that hosts 3dmusketeers.com)
+
+1. cPanel > Domains > Create a New Domain: `makernewsnetwork.com`, untick "Share document root",
+   document root `/home/<cpanel-user>/makernewsnetwork.com`. (3DM's user is `ndmusk5`; confirm.)
+2. Same screen again: `qa.makernewsnetwork.com` with document root `/home/<cpanel-user>/qa.makernewsnetwork.com`.
+   This is where the deploy workflow uploads. Production can later point at the same folder (3DM's Plan A)
+   or at a separate folder with a second deploy target.
+3. DNS (wherever makernewsnetwork.com's nameservers are; Cloudflare if it matches 3DM): A records for the
+   apex, `www` and `qa` to the server IP, or CNAMEs to the main hostname. Then cPanel > SSL/TLS Status >
+   Run AutoSSL so both hosts get certificates.
+4. cPanel > FTP Accounts: create one account whose directory is `/home/<cpanel-user>/qa.makernewsnetwork.com`
+   and nothing above it. Never reuse the 3DM deploy account: it is scoped to the 3DM folder.
+5. GitHub > makernewsnetwork-website > Settings > Secrets and variables > Actions: add `FTP_HOST` (the
+   server hostname 3DM already uses), `FTP_USERNAME`, `FTP_PASSWORD`. Then Actions > Deploy > Run workflow.
+6. In cPanel File Manager, inside the qa folder, create `api/config.php` from `api/config.example.php`
+   (three defines) and `api/qa-feedback-config.php` from its example with a fine-grained GitHub PAT that has
+   Issues read+write on this repo only. Agents never type tokens; Grant does.
+7. Tell Claude "qa is up". Claude runs `node tools/verify-live.js --qa`, opens the gate page, files one
+   test issue through the widget, and sends one test submission.
+
 ## 7. Open questions for Grant
 
-1. Hosting and DNS (see step 2 above).
-2. Obsidian: attach the vault via Remote Control next session, or keep `notes/` in this repo?
+1. ANSWERED: hosting on the 3DM cPanel account for now, plus local. DNS details still needed (section 6a step 3).
+2. Obsidian: pending, Grant will say.
 3. The 3DM cPanel account has a WordPress database `wp470` labeled "3dmreviews". Anything MNN should inherit?
-4. Logo: commission, or iterate on the ring mark (three concept rounds in `newsroom-docs/design/`)?
+4. Logo: PARKED.
 5. Carried over from the docs: Discord login method, download manager, filament blocked metrics now or
    later, who approves sponsorship deals, pulse threshold and sign-off, FibreSeeker Gen 2 vs Gen 3, fate
    of accounts that never finish verification.

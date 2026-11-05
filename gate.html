@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Preview access | Maker News Network</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/mnn.css">
+<style>
+  body { min-height: 100vh; display: grid; place-items: center; }
+  .gate { width: 100%; max-width: 360px; padding: 2rem 1.5rem; text-align: center; }
+  .gate h1 { font-size: 1.4rem; }
+  .gate p { color: var(--text-soft); font-size: .95rem; }
+  .gate input { margin-bottom: .75rem; text-align: center; }
+  .gate .err { color: var(--accent-2); font-weight: 700; font-size: .9rem; margin-top: .75rem; display: none; }
+</style>
+</head>
+<body>
+<main class="gate">
+  <p class="brand" style="justify-content:center;display:flex">Maker News <span class="brand-2">Network</span></p>
+  <h1>Preview</h1>
+  <p>This site is a work in progress. Enter the preview word to continue.</p>
+  <form id="gateForm" autocomplete="off">
+    <label class="visually-hidden" for="pw">Preview word</label>
+    <input type="password" id="pw" autofocus>
+    <button class="btn" type="submit" style="width:100%;justify-content:center">Enter</button>
+    <div class="err" id="err" role="alert">Not it. Try again.</div>
+  </form>
+</main>
+<!-- Soft visibility gate for a work-in-progress preview, not a security boundary: anyone who views
+     source can read the check. Same pattern as 3dmusketeers.com. Change the word below if it leaks. -->
+<script>
+  document.getElementById('gateForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var entered = document.getElementById('pw').value;
+    var expected = String.fromCharCode(108,97,121,101,114,108,105,110,101); // "layerline"
+    if (entered === expected) {
+      var expires = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toUTCString();
+      document.cookie = 'mnn_preview_access=granted; expires=' + expires + '; path=/; SameSite=Lax';
+      var params = new URLSearchParams(window.location.search);
+      var next = '/';
+      try {
+        var target = new URL(params.get('next') || '/', window.location.origin);
+        var path = target.pathname + target.search + target.hash;
+        if (target.origin === window.location.origin && /^\/(?![\/\\])/.test(path)) next = path;
+      } catch (err) {}
+      window.location.href = next;
+    } else {
+      document.getElementById('err').style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>
