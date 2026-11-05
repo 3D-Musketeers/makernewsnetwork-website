@@ -1,6 +1,6 @@
 # HANDOFF - makernewsnetwork-website
 
-Last updated: 2026-11-05 (session 1, PR 1 merged to main; work continues on branch claude/build-out-2). Written for a reader who has
+Last updated: 2026-11-05 (session 1, step 7 on branch claude/build-out-2: share image, Open Graph tags, Lighthouse baseline). Written for a reader who has
 seen nothing else. Rule: after every meaningful step, update this file, commit it with the work, push.
 Claude never pushes to `main`; it pushes `claude/*` branches and opens a pull request for Grant.
 
@@ -82,6 +82,10 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
     post form with counter, pending notice, sign out. Renders with textContent only. Mounted on the review
     template (`#mnn-comments`) and on the new `/sign-in/` page (account state, expired-link messages).
   - `api/config.example.php` grew the DB, APP_URL, AUTH_SECRET, mail, window, OAuth and CRON_KEY settings.
+- Added in step 7 (2026-11-05): `assets/og-default.png` (1200x630 text wordmark share image, rendered with
+  Playwright from the brand tokens; replace when the logo exists), Open Graph + Twitter card tags and a
+  canonical link on every page and both templates, home hero card heading fixed for heading order, QA
+  widget colors moved to the brand ember so its text passes contrast.
 - Added in step 6 (2026-11-05): `tools/new-page.js` scaffolds a review (`review <category> "Title" "Maker"`)
   or an article (`news|explainer|opinion "Headline"`) from `tools/templates/review.html` and
   `tools/templates/article.html`, fills nav/footer and rebuilds the sitemap. New pages carry [placeholders]
@@ -127,7 +131,12 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
   publish id 1 -> ok; users search -> row with signup IP and verification timestamps; restrict then verify
   user 2 -> ok; self-ban -> refused; public list shows 1 and 2 published, 3 gone. Playwright: /moderation/
   accounts tab and the staff view of the review comments render with 0 console errors.
-- Not run: Lighthouse, WCAG tooling, the deploy workflow, .htaccess under real Apache, MySQL (SQLite only),
+- Lighthouse 2026-11-05 (mobile, local static server, after step 7) on home, the review template, /submit/
+  and /standards/: performance 100, accessibility 100, best practices 100, SEO 66 on every page. The only
+  SEO failure is is-crawlable, caused by the intentional noindex; it clears at launch. Before the fix the
+  home page scored accessibility 94 (QA widget button contrast 2.84:1, hero card h3 before any h2).
+- Deploy workflow: first run on main (merge of PR 1) completed successfully through the skip path in 10 s.
+- Not run: WCAG tooling beyond Lighthouse, .htaccess under real Apache, MySQL (SQLite only),
   a real Google or Discord OAuth round trip (needs client ids and a public callback URL).
 
 ## 6. What is left, in order
@@ -143,8 +152,9 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
    `api/config.example.php`. Then a real round trip on qa. Moderation view: DONE (step 5). Still to build:
    display-name editing, a staff "lift restriction" email to the reader, and the privacy-policy wording check
    against what is actually stored (email, display name, provider id, signup IP, timestamps, comment text).
-5. Real logo (parked), OG image 1200x630, team bios on /about/, corrections wording on /standards/, GA4
-   property, open robots.txt and remove noindex from every page at launch.
+5. Real logo (parked; the share image and favicon are placeholders), team bios on /about/, corrections
+   wording on /standards/, GA4 measurement id from Grant and the snippet in every page head, open robots.txt
+   and remove noindex from every page at launch, then re-run Lighthouse (SEO should reach 100).
 6. (Moved to 4a: comments and accounts are built; server setup and moderation view remain.)
 7. `api/config.php` on the server, one real test submission, decide whether submissions also go to Flowlu.
 8. First real review draft on the template to shake out the data table before buying test equipment.
