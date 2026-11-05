@@ -1,0 +1,47 @@
+name: Deploy to qa.makernewsnetwork.com
+
+# Same pattern as 3dmusketeers-website: push to the default branch uploads the site over FTPS.
+# The upload step is skipped until the FTP_HOST / FTP_USERNAME / FTP_PASSWORD secrets exist, so
+# merging without hosting in place does nothing. The FTP account must be scoped to the MNN
+# document root (for example /home/<cpanel-user>/qa.makernewsnetwork.com), never the account root.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    env:
+      FTP_HOST: ${{ secrets.FTP_HOST }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Skip notice
+        if: env.FTP_HOST == ''
+        run: echo "FTP secrets not set; nothing deployed."
+
+      - name: FTP Deploy
+        if: env.FTP_HOST != ''
+        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          security: loose
+          server-dir: /
+          # Do not put comments inside the list below: every line in it is a pattern.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/*.md
+            **/*.zip
+            notes/**
+            tools/**
+            .claude/**
+            api/*.example.php

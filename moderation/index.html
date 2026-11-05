@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moderation | Maker News Network</title>
+<meta name="description" content="Staff only: comment and account moderation.">
+<meta name="theme-color" content="#f6f4ef">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/osifont.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/mnn.css">
+<script>(function(){try{var t=localStorage.getItem('mnn-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div data-include="nav"><!--inline-start-->
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Maker News Network home">Maker News <span class="brand-2">Network</span></a>
+    <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menu</button>
+    <nav class="site-nav" id="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="/reviews/">Reviews</a></li>
+        <li><a href="/news/">News</a></li>
+        <li><a href="/how-we-test/">How we test</a></li>
+        <li><a href="/standards/">Standards</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/submit/">Send a tip</a></li>
+      </ul>
+      <div class="nav-tools">
+        <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">
+          <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v13A6.5 6.5 0 0 0 8 1.5z" fill="currentColor"/></svg>
+          <span class="theme-label">Dark</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<!--inline-end--></div>
+<main id="main">
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow ember">Staff</p>
+      <h1>Moderation</h1>
+      <p class="lede">Held, published and removed comments, and every account. Staff only; everyone else sees a sign-in prompt.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div id="mod-gate" class="banner info" hidden><span aria-hidden="true">i</span><span><b>Staff only.</b> <a href="/sign-in/">Sign in</a> with a staff account. A staff role is granted on the server with <code>php api/cli/make-staff.php email</code>.</span></div>
+      <div id="mod" hidden>
+        <ul class="chips" data-mod-tabs aria-label="Moderation views">
+          <li><button class="chip" type="button" data-view="pending" aria-pressed="true">Held comments</button></li>
+          <li><button class="chip" type="button" data-view="published" aria-pressed="false">Published</button></li>
+          <li><button class="chip" type="button" data-view="removed" aria-pressed="false">Removed</button></li>
+          <li><button class="chip" type="button" data-view="users" aria-pressed="false">Accounts</button></li>
+        </ul>
+        <form class="form-row" id="mod-search" style="max-width:420px;margin-bottom:1.25rem"><label for="mod-q">Search</label><input id="mod-q" type="text" placeholder="text, email, name, page"></form>
+        <p class="form-status" id="mod-status" role="status" aria-live="polite"></p>
+        <div id="mod-list" class="comments"></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+(function () {
+  'use strict';
+  var gate = document.getElementById('mod-gate'), mod = document.getElementById('mod'), list = document.getElementById('mod-list'), status = document.getElementById('mod-status');
+  var view = 'pending', q = '';
+  function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+  function api(url, body) { return fetch(url, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), credentials: 'same-origin' } : { credentials: 'same-origin' }).then(function (r) { return r.json(); }); }
+  function btn(label, fn) { var b = el('button', 'chip', label); b.type = 'button'; b.style.marginRight = '.4rem'; b.addEventListener('click', fn); return b; }
+  function render(j) {
+    list.textContent = '';
+    if (view === 'users') {
+      if (!j.users.length) list.appendChild(el('p', 'soft', 'No accounts match.'));
+      j.users.forEach(function (u) {
+        var box = el('div', 'comment'); var head = el('div', 'comment-head');
+        head.appendChild(el('span', 'user', u.display_name)); head.appendChild(el('span', 'badge ' + (u.role === 'staff' ? 'staff' : u.status === 'verified' ? 'verified' : 'pending'), u.role === 'staff' ? 'staff' : u.status));
+        var t = el('time', null, u.created_at + ' UTC'); head.appendChild(t); box.appendChild(head);
+        box.appendChild(el('p', 'comment-body', u.email + ' via ' + u.provider + ' from ' + (u.signup_ip || '?') + '. First verified: ' + (u.first_verified_at || 'no') + '. Second sent: ' + (u.second_sent_at || 'no') + '. Second done: ' + (u.second_verified_at || 'no') + '. Comments: ' + u.comment_count + '.'));
+        var acts = el('div'); acts.style.marginTop = '.5rem';
+        if (u.role !== 'staff') {
+          if (u.status !== 'verified') acts.appendChild(btn('Mark verified', function () { act('/api/moderation.php?action=user', { id: u.id, status: 'verified' }); }));
+          if (u.status !== 'restricted') acts.appendChild(btn('Restrict', function () { act('/api/moderation.php?action=user', { id: u.id, status: 'restricted' }); }));
+          if (u.status !== 'banned') acts.appendChild(btn('Ban', function () { if (confirm('Ban ' + u.email + '?')) act('/api/moderation.php?action=user', { id: u.id, status: 'banned' }); }));
+          else acts.appendChild(btn('Unban (to new)', function () { act('/api/moderation.php?action=user', { id: u.id, status: 'new' }); }));
+        }
+        box.appendChild(acts); list.appendChild(box);
+      });
+      return;
+    }
+    if (!j.comments.length) list.appendChild(el('p', 'soft', 'Nothing here.'));
+    j.comments.forEach(function (c) {
+      var box = el('div', 'comment' + (c.status === 'pending' ? ' pending' : '')); var head = el('div', 'comment-head');
+      head.appendChild(el('span', 'user', c.display_name + ' <' + c.email + '>')); head.appendChild(el('span', 'badge ' + (c.status === 'published' ? 'verified' : 'pending'), c.status));
+      var a = el('a', null, c.slug); a.href = c.slug; head.appendChild(a);
+      var t = el('time', null, c.created_at + ' UTC'); head.appendChild(t); box.appendChild(head);
+      var body = el('p', 'comment-body', c.body); body.style.whiteSpace = 'pre-line'; box.appendChild(body);
+      var acts = el('div'); acts.style.marginTop = '.5rem';
+      if (c.status !== 'published') acts.appendChild(btn('Publish', function () { act('/api/moderation.php?action=comment', { id: c.id, status: 'published' }); }));
+      if (c.status !== 'removed') acts.appendChild(btn('Remove', function () { act('/api/moderation.php?action=comment', { id: c.id, status: 'removed' }); }));
+      if (c.user_status !== 'verified') acts.appendChild(btn('Verify this account', function () { act('/api/moderation.php?action=user', { id: c.user_id, status: 'verified' }); }));
+      box.appendChild(acts); list.appendChild(box);
+    });
+  }
+  function load() {
+    status.textContent = 'Loading...';
+    var url = view === 'users' ? '/api/moderation.php?what=users&q=' + encodeURIComponent(q) : '/api/moderation.php?what=comments&status=' + view + '&q=' + encodeURIComponent(q);
+    api(url).then(function (j) {
+      if (!j.ok) { gate.hidden = false; mod.hidden = true; return; }
+      gate.hidden = true; mod.hidden = false; status.textContent = ''; render(j);
+    }).catch(function () { status.textContent = 'Could not load.'; });
+  }
+  function act(url, body) { api(url, body).then(function (j) { status.textContent = j.ok ? 'Done.' : (j.error || 'Failed.'); load(); }); }
+  document.querySelector('[data-mod-tabs]').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-view]'); if (!b) return;
+    view = b.getAttribute('data-view');
+    document.querySelectorAll('[data-view]').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    load();
+  });
+  document.getElementById('mod-search').addEventListener('submit', function (e) { e.preventDefault(); q = document.getElementById('mod-q').value.trim(); load(); });
+  load();
+})();
+</script>
+
+<div data-include="footer"><!--inline-start-->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Maker News Network</h2>
+        <p>Reviews built on measured data, news that checks its sources, and a comment section where real people talk. By makers, for makers.</p>
+        <p><a href="mailto:tips@makernewsnetwork.com">tips@makernewsnetwork.com</a></p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/reviews/">Reviews</a></li>
+          <li><a href="/reviews/#printers">3D printers</a></li>
+          <li><a href="/reviews/#filament">Filament</a></li>
+          <li><a href="/reviews/#scanners">3D scanners</a></li>
+          <li><a href="/reviews/#cnc">CNC</a></li>
+          <li><a href="/reviews/#lasers">Lasers</a></li>
+          <li><a href="/news/">News</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Trust</h2>
+        <ul>
+          <li><a href="/how-we-test/">How we test</a></li>
+          <li><a href="/standards/">Editorial standards</a></li>
+          <li><a href="/standards/#disclosure">Sponsorship and affiliate disclosure</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Take part</h2>
+        <ul>
+          <li><a href="/submit/">Send a tip or request a review</a></li>
+          <li><a href="/submit/#feedback">Site feedback</a></li>
+          <li><a href="https://www.instagram.com/makernewsnetwork" rel="noopener" target="_blank">Instagram</a></li>
+          <li><a href="https://x.com/makernewsnetwork" rel="noopener" target="_blank">X</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>(c) <span data-year>2026</span> Maker News Network. Published by 3D Musketeers, LLC.</span>
+      <span><a href="/terms/">Terms</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="mailto:legal@makernewsnetwork.com">legal@makernewsnetwork.com</a></span>
+    </div>
+  </div>
+  <script>document.querySelectorAll('[data-year]').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+</footer>
+<!--inline-end--></div>
+<script src="/assets/mnn.js" defer></script>
+<script src="/assets/qa-feedback.js" defer></script>
+</body>
+</html>

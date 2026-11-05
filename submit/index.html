@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Send a tip or feedback | Maker News Network</title>
+<meta name="description" content="Send Maker News Network a news tip, request a review, report a correction, or give feedback on the site.">
+<meta name="theme-color" content="#f6f4ef">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/osifont.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/mnn.css">
+<script>(function(){try{var t=localStorage.getItem('mnn-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div data-include="nav"><!--inline-start-->
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Maker News Network home">Maker News <span class="brand-2">Network</span></a>
+    <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false">Menu</button>
+    <nav class="site-nav" id="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="/reviews/">Reviews</a></li>
+        <li><a href="/news/">News</a></li>
+        <li><a href="/how-we-test/">How we test</a></li>
+        <li><a href="/standards/">Standards</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/submit/">Send a tip</a></li>
+      </ul>
+      <div class="nav-tools">
+        <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">
+          <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v13A6.5 6.5 0 0 0 8 1.5z" fill="currentColor"/></svg>
+          <span class="theme-label">Dark</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<!--inline-end--></div>
+<main id="main">
+  <section class="hero">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">Take part</p>
+      <h1>Send a tip, request a review, or tell us what is wrong</h1>
+      <p class="lede">A person reads this inbox. Tips are verified before they run. Corrections get fixed in place and noted. Tell us how to credit you, or that you would rather we did not.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <form class="form" action="/api/submit.php" method="post" data-ajax novalidate>
+        <div class="form-row">
+          <label for="kind">What is this? <span class="hint">(required)</span></label>
+          <select id="kind" name="kind" required>
+            <option value="tip">A news tip</option>
+            <option value="review-request">A review request</option>
+            <option value="correction">A correction to something we published</option>
+            <option value="feedback">Feedback on the site</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+        <div class="form-row two">
+          <div class="form-row">
+            <label for="name">Name <span class="hint">(optional)</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" maxlength="120">
+          </div>
+          <div class="form-row">
+            <label for="email">Email <span class="hint">(optional, only if you want a reply)</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="200" inputmode="email">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="url">Link <span class="hint">(optional: the page, product, thread or article)</span></label>
+          <input id="url" name="url" type="url" inputmode="url" maxlength="500" placeholder="https://">
+        </div>
+        <div class="form-row">
+          <label for="message">Details <span class="hint">(required, at least 40 characters)</span></label>
+          <textarea id="message" name="message" required maxlength="4000" data-min="40" data-counter="message-count"></textarea>
+          <div class="counter" id="message-count" aria-live="polite"></div>
+        </div>
+        <div class="form-row">
+          <label for="credit">How should we credit you if we use this?</label>
+          <select id="credit" name="credit">
+            <option value="name">By name</option>
+            <option value="first">First name only</option>
+            <option value="anon">Do not credit me</option>
+          </select>
+        </div>
+        <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div>
+          <button class="btn" type="submit">Send</button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </div>
+        <p class="small soft">We store what you send, your email if you gave it, and the time it arrived. We do not store your IP address for this form. <a href="/privacy/">Privacy</a>.</p>
+      </form>
+    </div>
+  </section>
+  <section class="section" id="feedback">
+    <div class="wrap wrap-narrow prose">
+      <h2>Site feedback</h2>
+      <p>Something broken, hard to read, or hard to use? Pick "Feedback on the site" above and tell us the page and what happened. On the staging site, staff also have a feedback widget in the corner of every page that files directly into our issue tracker.</p>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"><!--inline-start-->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Maker News Network</h2>
+        <p>Reviews built on measured data, news that checks its sources, and a comment section where real people talk. By makers, for makers.</p>
+        <p><a href="mailto:tips@makernewsnetwork.com">tips@makernewsnetwork.com</a></p>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/reviews/">Reviews</a></li>
+          <li><a href="/reviews/#printers">3D printers</a></li>
+          <li><a href="/reviews/#filament">Filament</a></li>
+          <li><a href="/reviews/#scanners">3D scanners</a></li>
+          <li><a href="/reviews/#cnc">CNC</a></li>
+          <li><a href="/reviews/#lasers">Lasers</a></li>
+          <li><a href="/news/">News</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Trust</h2>
+        <ul>
+          <li><a href="/how-we-test/">How we test</a></li>
+          <li><a href="/standards/">Editorial standards</a></li>
+          <li><a href="/standards/#disclosure">Sponsorship and affiliate disclosure</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Take part</h2>
+        <ul>
+          <li><a href="/submit/">Send a tip or request a review</a></li>
+          <li><a href="/submit/#feedback">Site feedback</a></li>
+          <li><a href="https://www.instagram.com/makernewsnetwork" rel="noopener" target="_blank">Instagram</a></li>
+          <li><a href="https://x.com/makernewsnetwork" rel="noopener" target="_blank">X</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>(c) <span data-year>2026</span> Maker News Network. Published by 3D Musketeers, LLC.</span>
+      <span><a href="/terms/">Terms</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="mailto:legal@makernewsnetwork.com">legal@makernewsnetwork.com</a></span>
+    </div>
+  </div>
+  <script>document.querySelectorAll('[data-year]').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+</footer>
+<!--inline-end--></div>
+<script src="/assets/mnn.js" defer></script>
+<script src="/assets/qa-feedback.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Prototype: keep the whole site out of search until launch.
+# At launch replace with: Allow all, Disallow /api/, plus a Sitemap line.
+User-agent: *
+Disallow: /
