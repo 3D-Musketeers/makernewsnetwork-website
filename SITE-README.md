@@ -20,6 +20,7 @@ f79184c and 54ad5e0) and moved here on 2026-11-05.
 | `assets/qa-feedback.js`, `api/qa-feedback.php` | The staff feedback widget from the 3DM rebuild, repointed at qa.makernewsnetwork.com and a future MNN repo |
 | `api/auth.php`, `api/oauth.php`, `api/comments.php`, `api/cron/second-verification.php`, `api/lib/bootstrap.php` | Accounts (email link, Google, Discord), delayed second verification, comments. Needs MySQL + `api/config.php` |
 | `assets/mnn-comments.js`, `sign-in/` | Comments widget and the sign-in page |
+| `api/moderation.php`, `moderation/`, `api/cli/make-staff.php` | Staff moderation API and page; CLI to grant the staff role |
 | `gate.html` | Preview gate for the qa. host |
 | `tools/build-sitemap.js`, `tools/verify-live.js` | Sitemap generator and the launch/QA check |
 | `api/submit.php` | Reader submission endpoint (email only, honeypot, throttle, no IP stored). Needs `api/config.php` on the server |

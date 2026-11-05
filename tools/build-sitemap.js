@@ -9,7 +9,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const root = path.resolve(__dirname, '..');
 const BASE = 'https://makernewsnetwork.com';
-const skip = new Set(['404.html', 'gate.html']);
+const skip = new Set(['404.html', 'gate.html', 'moderation/index.html']);
 function walk(dir, out) {
   for (const name of fs.readdirSync(dir)) {
     if (['assets', 'tools', 'notes', 'api', 'node_modules', '.git', '.github'].includes(name)) continue;

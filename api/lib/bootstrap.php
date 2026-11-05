@@ -129,7 +129,20 @@ function same_site_path(?string $p): string
     if (!is_string($p) || !preg_match('#^/(?![/\\\\])[^\s]*$#', $p)) return '/';
     return $p;
 }
-function require_post(): void { if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') fail('POST only', 405); }
+function require_post(): void
+{
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') fail('POST only', 405);
+    // Defense in depth against cross-site form posts (the session cookie is SameSite=Lax already):
+    // an HTML form cannot send application/json, so every state-changing call must.
+    if (stripos((string) ($_SERVER['CONTENT_TYPE'] ?? ''), 'application/json') !== 0) fail('Send JSON', 415);
+}
+function require_staff(): array
+{
+    $u = current_user();
+    if (!$u) fail('Sign in', 401);
+    if ($u['role'] !== 'staff') fail('Staff only', 403);
+    return $u;
+}
 
 // ---------- rate limits (windowed counter per bucket and salted key) ----------
 function rate_limit(string $bucket, string $key, int $max, int $windowSeconds): void
