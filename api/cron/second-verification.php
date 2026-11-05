@@ -2,7 +2,7 @@
 /**
  * Runs the delayed second verification. Schedule it every 15 minutes in cPanel > Cron Jobs
  * (common setting "Every 15 minutes", command below; note a literal star-slash cannot appear in this comment):
- *   /usr/local/bin/php /home/<user>/qa.makernewsnetwork.com/api/cron/second-verification.php >/dev/null 2>&1
+ *   /usr/local/bin/php /home/<user>/mnn.3dmusketeers.com/api/cron/second-verification.php >/dev/null 2>&1
  * Also callable over HTTP with ?key=CRON_KEY for a manual run (CRON_KEY in api/config.php).
  *
  * 1. Users whose random due time has passed and who have not been sent the second link: send it.

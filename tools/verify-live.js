@@ -1,17 +1,17 @@
 /*
  * One-command site check, same idea as 3dmusketeers.com's verify-live.js.
  *
- *   node tools/verify-live.js                      -> https://makernewsnetwork.com (live)
- *   node tools/verify-live.js --qa                 -> https://qa.makernewsnetwork.com with the preview cookie
- *   node tools/verify-live.js http://localhost:3000 -> any base URL (local checks only, no host rules)
+ *   node tools/verify-live.js                              -> https://makernewsnetwork.com (production rules)
+ *   node tools/verify-live.js https://mnn.3dmusketeers.com -> a preview host: sends the preview cookie, expects the gate
+ *   node tools/verify-live.js http://localhost:3000        -> local dev server: page checks only, no host rules
  *
- * Prints PASS / FAIL per check, exits 1 on any FAIL. Host-rule checks (gate, redirects, 404s for private
- * files) are skipped for localhost because a static dev server has no .htaccess.
+ * Prints PASS / FAIL per check, exits 1 on any FAIL. Any base that is not makernewsnetwork.com counts as a
+ * preview host. Host-rule checks are skipped for localhost because a static dev server has no .htaccess.
  */
 const args = process.argv.slice(2);
-const qa = args.includes('--qa');
-const BASE = (args.find(a => a.startsWith('http')) || (qa ? 'https://qa.makernewsnetwork.com' : 'https://makernewsnetwork.com')).replace(/\/$/, '');
+const BASE = (args.find(a => a.startsWith('http')) || 'https://makernewsnetwork.com').replace(/\/$/, '');
 const local = /localhost|127\.0\.0\.1/.test(BASE);
+const qa = !local && !/^https?:\/\/(www\.)?makernewsnetwork\.com$/.test(BASE);
 const HEAD = qa ? { Cookie: 'mnn_preview_access=granted' } : {};
 let failed = 0;
 const rec = (ok, name, detail) => { if (!ok) failed++; console.log((ok ? 'PASS  ' : 'FAIL  ') + name + (detail ? '  [' + detail + ']' : '')); };
@@ -19,7 +19,7 @@ const skip = (name, why) => console.log('skip  ' + name + '  [' + why + ']');
 const get = (p, opt) => fetch(p.startsWith('http') ? p : BASE + p, Object.assign({ headers: HEAD, redirect: 'manual' }, opt || {}));
 
 (async () => {
-  console.log('Checking ' + BASE + (qa ? '  (QA mode)' : '') + '\n');
+  console.log('Checking ' + BASE + (qa ? '  (preview host)' : local ? '  (local)' : '  (production)') + '\n');
 
   const smRes = await get('/sitemap.xml');
   const sm = smRes.status === 200 ? await smRes.text() : '';
@@ -53,12 +53,12 @@ const get = (p, opt) => fetch(p.startsWith('http') ? p : BASE + p, Object.assign
   else {
     if (qa) {
       const r = await fetch(BASE + '/', { redirect: 'manual' });
-      rec(r.status === 302 && /gate\.html/.test(r.headers.get('location') || ''), 'QA host gates visitors without the cookie', 'status ' + r.status);
-      const g = await get('/gate.html'); rec(g.status === 200, 'gate.html serves on QA', 'status ' + g.status);
+      rec(r.status === 302 && /gate\.html/.test(r.headers.get('location') || ''), 'preview host gates visitors without the cookie', 'status ' + r.status);
+      const g = await get('/gate.html'); rec(g.status === 200, 'gate.html serves on the preview host', 'status ' + g.status);
     } else {
       const r = await get('/'); rec(r.status === 200, 'home serves directly (no gate)', 'status ' + r.status);
-      const g = await get('/gate.html'); rec(g.status === 404, 'gate.html is 404 on live', 'status ' + g.status);
-      const q = await get('/api/qa-feedback.php', { method: 'POST' }); rec(q.status === 404, 'QA feedback endpoint is 404 on live', 'status ' + q.status);
+      const g = await get('/gate.html'); rec(g.status === 404, 'gate.html is 404 on production', 'status ' + g.status);
+      const q = await get('/api/qa-feedback.php', { method: 'POST' }); rec(q.status === 404, 'QA feedback endpoint is 404 on production', 'status ' + q.status);
       const w = await fetch('https://www.makernewsnetwork.com/', { redirect: 'manual' }).catch(() => null);
       rec(w && w.status === 301, 'www redirects to apex', w ? 'status ' + w.status : 'unreachable');
     }
