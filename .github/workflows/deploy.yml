@@ -1,9 +1,10 @@
-name: Deploy to qa.makernewsnetwork.com
+name: Deploy to the preview host
 
 # Same pattern as 3dmusketeers-website: push to the default branch uploads the site over FTPS.
 # The upload step is skipped until the FTP_HOST / FTP_USERNAME / FTP_PASSWORD secrets exist, so
-# merging without hosting in place does nothing. The FTP account must be scoped to the MNN
-# document root (for example /home/<cpanel-user>/qa.makernewsnetwork.com), never the account root.
+# merging without hosting in place does nothing. The FTP account must be scoped to the MNN preview
+# document root on the 3dmusketeers.com cPanel account (for example /home/<cpanel-user>/mnn.3dmusketeers.com),
+# never the account root and never the 3DM site folder.
 
 on:
   push:

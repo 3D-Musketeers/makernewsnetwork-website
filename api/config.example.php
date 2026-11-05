@@ -14,7 +14,7 @@ define('DB_USER', 'CPANELUSER_mnn');
 define('DB_PASS', 'REPLACE');
 // Local testing instead: define('DB_DSN', 'sqlite:' . __DIR__ . '/../../mnn-local.sqlite');
 
-define('APP_URL', 'https://qa.makernewsnetwork.com');          // no trailing slash; links in emails use it
+define('APP_URL', 'https://mnn.3dmusketeers.com');            // the host this folder is served on, no trailing slash; links in emails use it
 define('AUTH_SECRET', 'REPLACE_WITH_64_RANDOM_HEX_CHARS');      // signs OAuth state and rate-limit keys
 define('MAIL_FROM_ADDRESS', 'no-reply@makernewsnetwork.com');
 define('MAIL_FROM_NAME', 'Maker News Network');

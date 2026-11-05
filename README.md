@@ -20,7 +20,8 @@ node tools/check-ascii.js
 
 ## Deploy
 
-Push to `main` runs `.github/workflows/deploy.yml`, which uploads over FTPS to the QA document root once
+Push to `main` runs `.github/workflows/deploy.yml`, which uploads over FTPS to the preview document root (a
+subdomain on the 3dmusketeers.com cPanel account for now) once
 the `FTP_HOST`, `FTP_USERNAME` and `FTP_PASSWORD` repository secrets exist. Until then the job prints a
 skip notice and uploads nothing. Server-only files (`api/config.php`, `api/qa-feedback-config.php`) are
 created by hand on the server and are gitignored.

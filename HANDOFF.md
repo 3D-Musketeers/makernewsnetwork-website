@@ -1,6 +1,6 @@
 # HANDOFF - makernewsnetwork-website
 
-Last updated: 2026-11-05 (session 1, step 7 on branch claude/build-out-2: share image, Open Graph tags, Lighthouse baseline). Written for a reader who has
+Last updated: 2026-11-05 (session 1, step 8 on branch claude/build-out-3: preview host is a 3dmusketeers.com subdomain, no MNN hosting bought). Written for a reader who has
 seen nothing else. Rule: after every meaningful step, update this file, commit it with the work, push.
 Claude never pushes to `main`; it pushes `claude/*` branches and opens a pull request for Grant.
 
@@ -44,8 +44,13 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
    raw HTML, hardened .htaccess, secrets only on the server.
 7. Deploy workflow deploys on push to `main` but skips itself until the FTP secrets exist, so merging
    the first PR is safe before hosting is set up.
-9. Hosting (Grant, 2026-11-05): makernewsnetwork.com is owned. For now the site is built on the existing
-   3DM cPanel account and/or locally. No separate hosting. See the cPanel checklist in section 6a.
+9. Hosting (Grant, 2026-11-05, refined later the same day): makernewsnetwork.com is owned but NO hosting is
+   bought for it yet. All testing happens on the existing 3dmusketeers.com cPanel account, on a preview
+   subdomain of 3dmusketeers.com (suggested name `mnn.3dmusketeers.com`; Grant may pick another). Because of
+   that, step 8 made the code host-agnostic: production is `makernewsnetwork.com` with or without www, and
+   EVERY other host is a preview host (cookie gate on, QA widget on, assets uncached, QA feedback endpoint
+   open). Nothing in the code or the workflow names the preview host; only `APP_URL` in `api/config.php`
+   and the OAuth redirect URIs do, and Grant sets those.
 10. Obsidian (Grant, 2026-11-05): keep `notes/` in the repo for now. Vault-ready format kept so they can move later.
 11. Logo: parked. The ring-mark favicon stays as the placeholder.
 8. Prototype is kept out of search: `<meta name="robots" content="noindex, nofollow">` on every page and
@@ -61,7 +66,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 - `api/submit.php` reader submissions (email only, honeypot, salted-hash throttle, no IP stored). Needs
   `api/config.php` on the server (template `api/config.example.php`).
 - `api/qa-feedback.php` + `assets/qa-feedback.js`: the staff feedback widget from the 3DM rebuild,
-  repointed to `qa.makernewsnetwork.com` and this repo. Not yet included on any page.
+  repointed at this repo; active on every host except makernewsnetwork.com. Included on every page since step 3.
 - `.github/workflows/deploy.yml` FTPS deploy on push to `main`, self-skipping without secrets.
 - `favicon.svg` placeholder ring mark. Real logo still a TODO (parked by Grant).
 - Added in step 4 (2026-11-05), COMMENTS AND ACCOUNTS, per `newsroom-docs/product/comment-auth-system.md`:
@@ -82,6 +87,10 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
     post form with counter, pending notice, sign out. Renders with textContent only. Mounted on the review
     template (`#mnn-comments`) and on the new `/sign-in/` page (account state, expired-link messages).
   - `api/config.example.php` grew the DB, APP_URL, AUTH_SECRET, mail, window, OAuth and CRON_KEY settings.
+- Added in step 8 (2026-11-05): host-agnostic preview. `.htaccess` gates, un-caches and opens the QA
+  endpoint on every host except makernewsnetwork.com; `assets/qa-feedback.js` runs on every host except
+  production; `api/qa-feedback.php` allows only its own origin; `tools/verify-live.js` treats any
+  non-production base URL as a preview host (the `--qa` flag is gone); the workflow is named generically.
 - Added in step 7 (2026-11-05): `assets/og-default.png` (1200x630 text wordmark share image, rendered with
   Playwright from the brand tokens; replace when the logo exists), Open Graph + Twitter card tags and a
   canonical link on every page and both templates, home hero card heading fixed for heading order, QA
@@ -102,8 +111,8 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 - Added in step 3 (2026-11-05): `gate.html` preview gate (cookie `mnn_preview_access`, word "layerline",
   soft gate only), host-aware `.htaccess` (gate and QA feedback endpoint only on qa.*, www to apex 301,
   private files 404, PHP only under /api, no-cache on QA), `assets/qa-feedback.js` included on every page
-  (it exits unless the host is qa.makernewsnetwork.com or localhost), `tools/build-sitemap.js` + generated
-  `sitemap.xml` (10 urls), `tools/verify-live.js` (live, --qa, or a local base URL).
+  (since step 8 it exits only on makernewsnetwork.com), `tools/build-sitemap.js` + generated
+  `sitemap.xml` (10 urls), `tools/verify-live.js` (production, a preview base URL, or a local base URL).
 
 ## 5. Test results (from the 3DM branch build, same files)
 
@@ -116,7 +125,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
   locally; on cPanel mail() works); GET -> 405; 6 rapid posts -> the 5th and later return 429.
 - `node tools/verify-live.js http://localhost:3112`: ALL PASS (sitemap 10 urls, every page 200 with one h1,
   nav+footer pre-filled, title, description, ASCII; assets and robots serve; unknown path 404). Host rules
-  are skipped on localhost; run with --qa once qa.makernewsnetwork.com exists.
+  are skipped on localhost; run with the preview base URL once the subdomain exists.
 - Comments and accounts, end to end under `php -S` with SQLite and a mail log file (window set to 0 h so
   the cron fires at once): me -> null; request-link -> new account, mail logged; verify -> 302 to the next
   path and a session; reusing the link -> 302 to /sign-in/?expired=1; me -> status new, second_pending;
@@ -144,7 +153,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 1. DONE 2026-11-05: PR 1 merged into `main` (merge commit da34623). Later work goes on `claude/*` branches with a PR each.
 2. DONE 2026-11-05: gate page, host-aware .htaccess, QA widget on every page, sitemap tool, verify-live.
 3. cPanel setup by Grant (section 6a), then add the three FTP secrets and re-run the deploy workflow, then
-   `node tools/verify-live.js --qa` must be ALL PASS.
+   `node tools/verify-live.js https://mnn.3dmusketeers.com` must be ALL PASS.
 4. `api/qa-feedback-config.php` and `api/config.php` created by Grant on the server (templates in `api/`).
 4a. DONE 2026-11-05 (code): comments and accounts. Still needed on the server: a MySQL database and user
    (cPanel > MySQL Databases), the DB_* lines in `api/config.php`, a cron job every 15 minutes running
@@ -164,41 +173,45 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
     pulse pipeline when Reddit answers the commercial-approval application (submitted 2026-08-02).
 11. Add a note to `newsroom-docs/product/tech-stack.md` that the platform changed to static on 2026-11-05.
 
-## 6a. cPanel checklist for Grant (about 20 minutes, same account that hosts 3dmusketeers.com)
+## 6a. cPanel checklist for Grant (about 20 minutes, on the existing 3dmusketeers.com account; nothing to buy)
 
-1. cPanel > Domains > Create a New Domain: `makernewsnetwork.com`, untick "Share document root",
-   document root `/home/<cpanel-user>/makernewsnetwork.com`. (3DM's user is `ndmusk5`; confirm.)
-2. Same screen again: `qa.makernewsnetwork.com` with document root `/home/<cpanel-user>/qa.makernewsnetwork.com`.
-   This is where the deploy workflow uploads. Production can later point at the same folder (3DM's Plan A)
-   or at a separate folder with a second deploy target.
-3. DNS (wherever makernewsnetwork.com's nameservers are; Cloudflare if it matches 3DM): A records for the
-   apex, `www` and `qa` to the server IP, or CNAMEs to the main hostname. Then cPanel > SSL/TLS Status >
-   Run AutoSSL so both hosts get certificates.
-4. cPanel > FTP Accounts: create one account whose directory is `/home/<cpanel-user>/qa.makernewsnetwork.com`
-   and nothing above it. Never reuse the 3DM deploy account: it is scoped to the 3DM folder.
-5. GitHub > makernewsnetwork-website > Settings > Secrets and variables > Actions: add `FTP_HOST` (the
+1. cPanel > Domains > Create a New Domain: `mnn.3dmusketeers.com` (or the name you prefer), untick "Share
+   document root", document root `/home/<cpanel-user>/mnn.3dmusketeers.com`. 3DM's user is `ndmusk5`
+   (confirm). Never point it at the 3DM site folder.
+2. DNS: 3dmusketeers.com is on Cloudflare, so add a DNS record there for the subdomain (A record to the
+   server IP, same as the apex, or a CNAME to the apex). Then cPanel > SSL/TLS Status > Run AutoSSL.
+3. cPanel > FTP Accounts: create one account whose directory is exactly that document root and nothing
+   above it. Never reuse the 3DM deploy account.
+4. GitHub > makernewsnetwork-website > Settings > Secrets and variables > Actions: add `FTP_HOST` (the
    server hostname 3DM already uses), `FTP_USERNAME`, `FTP_PASSWORD`. Then Actions > Deploy > Run workflow.
-6. cPanel > MySQL Databases: create database `<user>_mnn` and a user with ALL privileges on it.
-7. In cPanel File Manager, inside the qa folder, create `api/config.php` from `api/config.example.php`
-   (every define, including DB_*, APP_URL = https://qa.makernewsnetwork.com, a 64-hex AUTH_SECRET, CRON_KEY)
-   and `api/qa-feedback-config.php` from its example with a fine-grained GitHub PAT that has Issues
-   read+write on this repo only. Agents never type tokens; Grant does.
-8. cPanel > Cron Jobs: every 15 minutes, command
-   `/usr/local/bin/php /home/<user>/qa.makernewsnetwork.com/api/cron/second-verification.php >/dev/null 2>&1`
-9. Optional now, needed before launch: Google OAuth client (console.cloud.google.com, Web application,
-   redirect URI https://qa.makernewsnetwork.com/api/oauth.php?provider=google) and a Discord application
-   (discord.com/developers, OAuth2 redirect https://qa.makernewsnetwork.com/api/oauth.php?provider=discord).
-   Paste the ids and secrets into `api/config.php`. Add the production URIs later.
-9a. After signing in once on qa with the staff email: run on the server
-   `php /home/<user>/qa.makernewsnetwork.com/api/cli/make-staff.php you@example.com` (cPanel Terminal or
-   a one-off cron). Then /moderation/ works for that account.
-10. Tell Claude "qa is up". Claude runs `node tools/verify-live.js --qa`, opens the gate page, files one
-   test issue through the widget, sends one test submission, and walks one account through both
-   verification emails and a comment.
+   Open https://mnn.3dmusketeers.com/ : the preview gate should appear; the word is "layerline".
+5. cPanel > MySQL Databases: create database `<user>_mnn` and a user with ALL privileges on it.
+6. In cPanel File Manager, inside the preview folder, create `api/config.php` from `api/config.example.php`
+   (every define; `APP_URL` = https://mnn.3dmusketeers.com with no trailing slash; a 64-hex `AUTH_SECRET`;
+   a `CRON_KEY`) and `api/qa-feedback-config.php` from its example with a fine-grained GitHub PAT that has
+   Issues read+write on this repo only. Agents never type tokens; Grant does.
+7. cPanel > Cron Jobs: every 15 minutes, command
+   `/usr/local/bin/php /home/<user>/mnn.3dmusketeers.com/api/cron/second-verification.php >/dev/null 2>&1`
+8. Optional now, needed before launch: Google OAuth client (console.cloud.google.com, Web application,
+   redirect URI https://mnn.3dmusketeers.com/api/oauth.php?provider=google) and a Discord application
+   (discord.com/developers, OAuth2 redirect https://mnn.3dmusketeers.com/api/oauth.php?provider=discord).
+   Paste the ids and secrets into `api/config.php`. Add the makernewsnetwork.com URIs later.
+9. After signing in once on the preview host with your email: run on the server
+   `php /home/<user>/mnn.3dmusketeers.com/api/cli/make-staff.php you@example.com` (cPanel Terminal or a
+   one-off cron). Then /moderation/ works for that account.
+10. Tell Claude "preview is up" (and the hostname if it is not mnn.3dmusketeers.com). Claude runs
+   `node tools/verify-live.js https://mnn.3dmusketeers.com`, opens the gate page, files one test issue
+   through the widget, sends one test submission, and walks one account through both verification emails
+   and a comment.
+
+Moving to makernewsnetwork.com later: buy or assign hosting, point the domain at a folder that holds the
+same files (or at this very folder), set `APP_URL` and the OAuth URIs to the new domain, add the domain to
+the deploy (second FTP target or a second workflow), remove the noindex meta and open robots.txt. The
+host-aware rules already treat makernewsnetwork.com as production with no code change.
 
 ## 7. Open questions for Grant
 
-1. ANSWERED: hosting on the 3DM cPanel account for now, plus local. DNS details still needed (section 6a step 3).
+1. ANSWERED: a preview subdomain on the 3DM cPanel account, no MNN hosting bought. Confirm the subdomain name (suggested mnn.3dmusketeers.com).
 2. ANSWERED: notes stay in the repo for now.
 3. The 3DM cPanel account has a WordPress database `wp470` labeled "3dmreviews". Anything MNN should inherit?
 4. Logo: PARKED.

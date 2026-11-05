@@ -17,11 +17,11 @@ f79184c and 54ad5e0) and moved here on 2026-11-05.
 | `terms/`, `privacy/` | Generated from `newsroom-docs/legal/*.md` drafts, ASCII-ized, draft banner on top |
 | `assets/mnn.css`, `assets/mnn.js` | Design system (ink/paper/teal/ember, osifont, dark mode toggle, 8px corners, tabular nums) and behaviour |
 | `assets/nav.html`, `assets/footer.html` | Shared fragments. After editing: `node tools/inline-includes.js` |
-| `assets/qa-feedback.js`, `api/qa-feedback.php` | The staff feedback widget from the 3DM rebuild, repointed at qa.makernewsnetwork.com and a future MNN repo |
+| `assets/qa-feedback.js`, `api/qa-feedback.php` | The staff feedback widget from the 3DM rebuild, filing issues on this repo; active on every host except makernewsnetwork.com |
 | `api/auth.php`, `api/oauth.php`, `api/comments.php`, `api/cron/second-verification.php`, `api/lib/bootstrap.php` | Accounts (email link, Google, Discord), delayed second verification, comments. Needs MySQL + `api/config.php` |
 | `assets/mnn-comments.js`, `sign-in/` | Comments widget and the sign-in page |
 | `api/moderation.php`, `moderation/`, `api/cli/make-staff.php` | Staff moderation API and page; CLI to grant the staff role |
-| `gate.html` | Preview gate for the qa. host |
+| `gate.html` | Preview gate for every non-production host (anything but makernewsnetwork.com) |
 | `tools/build-sitemap.js`, `tools/verify-live.js` | Sitemap generator and the launch/QA check |
 | `tools/new-page.js`, `tools/templates/` | Scaffold a new review or article page |
 | `api/submit.php` | Reader submission endpoint (email only, honeypot, throttle, no IP stored). Needs `api/config.php` on the server |

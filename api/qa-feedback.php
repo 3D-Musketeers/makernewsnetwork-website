@@ -11,17 +11,12 @@
  */
 
 // -- CORS ---------------------------------------------------------------------
+// The widget always calls this endpoint from the same host it is served on (any preview host on the
+// 3DM cPanel account, or localhost), so allow exactly that origin and nothing else.
 $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
-$allowed_origins = [
-    'https://qa.makernewsnetwork.com',
-    'http://qa.makernewsnetwork.com',
-    'http://localhost',
-    'http://127.0.0.1',
-];
-// Allow any localhost port (dev servers)
-if (preg_match('#^https?://(localhost|127\.0\.0\.1)(:\d+)?$#', $origin)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-} elseif (in_array($origin, $allowed_origins, true)) {
+$self_host = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
+$origin_host = strtolower((string) (parse_url($origin, PHP_URL_HOST) ?? ''));
+if ($origin !== '' && ($origin_host === $self_host || preg_match('#^https?://(localhost|127\.0\.0\.1)(:\d+)?$#', $origin))) {
     header('Access-Control-Allow-Origin: ' . $origin);
 }
 header('Access-Control-Allow-Methods: POST, OPTIONS');

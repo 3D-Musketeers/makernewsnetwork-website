@@ -1,5 +1,5 @@
 /* ===================================================================
-   QA Feedback Widget - qa.makernewsnetwork.com ONLY
+   QA Feedback Widget - preview hosts only (never makernewsnetwork.com)
    Self-contained: injects all CSS + HTML via JS.
    Hostname-gated: exits immediately on production.
    Syncs feedback to GitHub Issues via /api/qa-feedback.php.
@@ -9,10 +9,10 @@
 
   // -- HOSTNAME GATE ----------------------------------------------
   var host = window.location.hostname.toLowerCase();
-  var allowed = (host === 'qa.makernewsnetwork.com' ||
-                 host === 'localhost' ||
-                 host === '127.0.0.1');
-  if (!allowed) return;            // production -> nothing happens
+  // Production is makernewsnetwork.com (with or without www). Every other host is a preview host
+  // (today a subdomain on the 3dmusketeers.com cPanel account, or localhost) and gets the widget.
+  var production = (host === 'makernewsnetwork.com' || host === 'www.makernewsnetwork.com');
+  if (production) return;          // production -> nothing happens
 
   // -- CONSTANTS --------------------------------------------------
   var STORAGE_KEY = 'qa_feedback_items';
@@ -462,7 +462,7 @@
     var lines = [];
     lines.push('# QA Feedback - ' + items.length + ' item(s)');
     lines.push('Exported: ' + new Date().toISOString());
-    lines.push('Site: qa.makernewsnetwork.com');
+    lines.push('Site: ' + window.location.hostname);
     lines.push('');
 
     for (var i = 0; i < items.length; i++) {
