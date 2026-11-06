@@ -2,6 +2,7 @@
  * Scaffold a new page from tools/templates, then fill nav/footer and rebuild the sitemap.
  *   node tools/new-page.js review printers "Prusa XL" "Prusa Research"
  *   node tools/new-page.js review scanners "Creality Raptor" "Creality"
+ *   node tools/new-page.js review printers "Prusa XL" "Prusa Research" full-review   (type: first-look (default), full-review, follow-up)
  *   node tools/new-page.js news "Bondtech admits the INDX nozzle problem"
  *   node tools/new-page.js explainer "What HRC means for a nozzle"
  *   node tools/new-page.js opinion "Speed is not the spec that matters"
@@ -19,11 +20,13 @@ const slugify = s => s.toLowerCase().replace(/\+/g, ' plus ').replace(/[^a-z0-9]
 let file, slug, tpl, vars;
 const today = new Date().toISOString().slice(0, 10);
 if (kind === 'review') {
-  const [cat, title, maker] = rest;
+  const [cat, title, maker, typeArg] = rest;
+  const types = { 'first-look': 'First look', 'full-review': 'Full review', 'follow-up': '6-month follow-up' };
+  if (typeArg && !types[typeArg]) { console.error('article type must be first-look, full-review or follow-up'); process.exit(1); }
   if (!cats[cat] || !title) { console.error('usage: node tools/new-page.js review <printers|filament|scanners|cnc|lasers> "Title" "Manufacturer"'); process.exit(1); }
   slug = '/reviews/' + cat + '/' + slugify(title) + '/';
   tpl = 'review.html';
-  vars = { TITLE: title, DESCRIPTION: '[One sentence: what we measured and what we found. 120 to 155 characters.]', CATEGORY_LABEL: cats[cat], LEDE: '[Two sentences: what the product claims and what the test checks.]', MANUFACTURER: maker || '[manufacturer]', SLUG: slug, DATE: today };
+  vars = { TITLE: title, DESCRIPTION: '[One sentence: what we measured and what we found. 120 to 155 characters.]', CATEGORY_LABEL: cats[cat], ARTICLE_TYPE: types[typeArg || 'first-look'], LEDE: '[Two sentences: what the product claims and what the test checks.]', MANUFACTURER: maker || '[manufacturer]', SLUG: slug, DATE: today };
 } else if (['news', 'explainer', 'opinion'].includes(kind)) {
   const [title] = rest;
   if (!title) { console.error('usage: node tools/new-page.js ' + kind + ' "Headline"'); process.exit(1); }

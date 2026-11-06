@@ -7,7 +7,7 @@ created: 2026-11-05
 ## 2026-11-05 - Session 1: research and starter site
 Branch: `claude/relaxed-maxwell-2sslfs` in 3dmusketeers-website, folder `makernewsnetwork/`.
 
-Read: all of newsroom-docs (design, product, legal, editorial SOPs, testing methodology, Reddit pipeline), all 81 issues on the 3DM site repo, GO-LIVE-TASKS.md, QA-CONTENT-AUDIT.md, launch runbook, the 3DM shared assets and tooling. Obsidian vault was not reachable from the cloud session (no computer folder attached), so these notes are written here for Grant to drop into the vault.
+Read: all of newsroom-docs (design, product, legal, docs, testing methodology), all 81 issues on the 3DM site repo, GO-LIVE-TASKS.md, QA-CONTENT-AUDIT.md, launch runbook, the 3DM shared assets and tooling. Obsidian vault was not reachable from the cloud session (no computer folder attached), so these notes are written here for Grant to drop into the vault.
 
 Built: design system (mnn.css, mnn.js), nav/footer fragments, home, reviews index with filters, review page template, news, how-we-test, standards, about, submit (with working client-side validation), terms and privacy generated from the drafts, 404, favicon placeholder, robots (disallow all), .htaccess, submit.php, QA feedback widget repointed, inline-includes and check-ascii tools, README. Checked in Playwright at 1280 light, 1280 dark, 390 phone: no console errors, dark toggle persists, phone menu works.
 

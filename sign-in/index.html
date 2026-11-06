@@ -57,7 +57,7 @@
     <div class="wrap wrap-narrow">
       <p class="eyebrow">Account</p>
       <h1>Sign in</h1>
-      <p class="lede">An email link, Google, or Discord. No passwords to remember. New accounts get a second confirmation email within a day; comments are held until it is clicked.</p>
+      <p class="lede" hidden data-comments-feature>An email link, Google, or Discord. No passwords to remember. New accounts get a second confirmation email within a day; comments are held until it is clicked.</p>
     </div>
   </section>
   <section class="section">
@@ -65,7 +65,8 @@
       <div class="banner info" id="msg-expired" hidden><span aria-hidden="true">i</span><span><b>That link has expired or was already used.</b> Request a new one below.</span></div>
       <div class="banner info" id="msg-second-done" hidden><span aria-hidden="true">i</span><span><b>Account fully confirmed.</b> Your comments now post immediately, including any that were held.</span></div>
       <div class="banner" id="msg-second-expired" hidden><span aria-hidden="true">!</span><span><b>That confirmation link has expired.</b> Email legal@makernewsnetwork.com and we will sort it out.</span></div>
-      <div id="mnn-comments" data-slug="/sign-in/" data-signin-only><p class="soft">Loading...</p></div>
+      <div class="banner info" data-comments-off><span aria-hidden="true">i</span><span><b>Accounts are not open yet.</b> We are launching without comments or sign-in. They come after launch. To reach us now, <a href="/submit/">send a tip or a correction</a>.</span></div>
+      <div id="mnn-comments" data-slug="/sign-in/" data-signin-only hidden data-comments-feature><p class="soft">Loading...</p></div>
     </div>
   </section>
 </main>
@@ -84,7 +85,7 @@
     <div class="footer-grid">
       <div>
         <h2>Maker News Network</h2>
-        <p>Reviews built on measured data, news that checks its sources, and a comment section where real people talk. By makers, for makers.</p>
+        <p>Reviews built on measured data and news that checks its sources. By makers, for makers.</p>
         <p><a href="mailto:tips@makernewsnetwork.com">tips@makernewsnetwork.com</a></p>
       </div>
       <div>
@@ -119,7 +120,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>(c) <span data-year>2026</span> Maker News Network. Published by 3D Musketeers, LLC.</span>
+      <span>(c) <span data-year>2026</span> Maker News Network.</span>
       <span><a href="/terms/">Terms</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="mailto:legal@makernewsnetwork.com">legal@makernewsnetwork.com</a></span>
     </div>
   </div>

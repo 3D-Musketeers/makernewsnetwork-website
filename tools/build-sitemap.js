@@ -10,12 +10,14 @@ const { execSync } = require('child_process');
 const root = path.resolve(__dirname, '..');
 const BASE = 'https://makernewsnetwork.com';
 const skip = new Set(['404.html', 'gate.html', 'moderation/index.html']);
+// /sign-in/ only belongs in the sitemap when comments are switched on in site-config.json.
+try { if (JSON.parse(fs.readFileSync(path.join(root, 'site-config.json'), 'utf8')).comments !== true) skip.add('sign-in/index.html'); } catch (e) { skip.add('sign-in/index.html'); }
 function walk(dir, out) {
   for (const name of fs.readdirSync(dir)) {
     if (['assets', 'tools', 'notes', 'api', 'node_modules', '.git', '.github'].includes(name)) continue;
     const p = path.join(dir, name);
     if (fs.statSync(p).isDirectory()) walk(p, out);
-    else if (name.endsWith('.html') && !skip.has(path.relative(root, p))) out.push(p);
+    else if (name.endsWith('.html') && !skip.has(path.relative(root, p).split(path.sep).join('/'))) out.push(p);
   }
   return out;
 }

@@ -29,13 +29,18 @@
   </form>
 </main>
 <!-- Soft visibility gate for a work-in-progress preview, not a security boundary: anyone who views
-     source can read the check. Same pattern as 3dmusketeers.com. Change the word below if it leaks. -->
+     source can read the check. Same pattern as 3dmusketeers.com. Change the word if it leaks (see the hash note below). -->
 <script>
   document.getElementById('gateForm').addEventListener('submit', function (e) {
     e.preventDefault();
     var entered = document.getElementById('pw').value;
-    var expected = String.fromCharCode(108,97,121,101,114,108,105,110,101); // "layerline"
-    if (entered === expected) {
+    // Only the SHA-256 of the word is stored here (the word itself is not in the repo). To change the word:
+    // run  node tools/gate-hash.js "new word"  and paste the hash below.
+    var EXPECTED_HASH = 'ee2618d34c5e80af3b0c1f5ad7d3c7ea2ef11b4a00d392e84e9502daf6863785';
+    if (!(window.crypto && crypto.subtle)) { document.getElementById('err').textContent = 'This page needs https.'; document.getElementById('err').style.display = 'block'; return; }
+    crypto.subtle.digest('SHA-256', new TextEncoder().encode(entered)).then(function (buf) {
+    var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+    if (hex === EXPECTED_HASH) {
       var expires = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toUTCString();
       document.cookie = 'mnn_preview_access=granted; expires=' + expires + '; path=/; SameSite=Lax';
       var params = new URLSearchParams(window.location.search);
@@ -47,8 +52,10 @@
       } catch (err) {}
       window.location.href = next;
     } else {
+      document.getElementById('err').textContent = 'Not it. Try again.';
       document.getElementById('err').style.display = 'block';
     }
+    });
   });
 </script>
 </body>

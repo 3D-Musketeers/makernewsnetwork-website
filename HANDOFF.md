@@ -19,7 +19,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 | Site files | this repo root. `SITE-README.md` lists every file and what it does |
 | Design, product, legal, editorial and testing docs | repo `3D-Musketeers/newsroom-docs` (private, last commit 2026-08-07) |
 | Feedback from the 3DM rebuild | GitHub issues 2 to 82 on `3D-Musketeers/3dmusketeers-website`, distilled in `notes/MNN - Lessons from the 3DM Website.md` |
-| Consolidated brief of every MNN decision so far | `notes/MNN - Project Brief (consolidated 2026-11-05).md` |
+| Consolidated brief of every MNN decision so far | removed from this public repo 2026-11-05 (it named a competitor and summarised private SOP topics); a copy is in Grant's vault |
 | Session log and open questions | `notes/MNN - Build Log.md` and section 7 below |
 | Obsidian vault | Grant's PC only, not reachable from cloud sessions. `notes/` is written vault-ready (frontmatter, wikilinks) |
 | Origin of this code | `3dmusketeers-website` branch `claude/relaxed-maxwell-2sslfs`, commits f79184c (site) and 54ad5e0 (handoff). That folder is being deleted from the 3DM branch now that this repo exists |
@@ -108,8 +108,7 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
   non-staff see a sign-in notice; excluded from the sitemap), `api/cli/make-staff.php` (CLI only, grants or
   revokes the staff role; staff are also marked fully verified). Also every POST endpoint now requires
   `Content-Type: application/json` (415 otherwise) as defense in depth beside the SameSite=Lax cookie.
-- Added in step 3 (2026-11-05): `gate.html` preview gate (cookie `mnn_preview_access`, word "layerline",
-  soft gate only), host-aware `.htaccess` (gate and QA feedback endpoint only on qa.*, www to apex 301,
+- Added in step 3 (2026-11-05): `gate.html` preview gate (cookie `mnn_preview_access`, hash-checked word, soft gate only; the word is NOT in this repo, see section 9), host-aware `.htaccess` (gate and QA feedback endpoint only on qa.*, www to apex 301,
   private files 404, PHP only under /api, no-cache on QA), `assets/qa-feedback.js` included on every page
   (since step 8 it exits only on makernewsnetwork.com), `tools/build-sitemap.js` + generated
   `sitemap.xml` (10 urls), `tools/verify-live.js` (production, a preview base URL, or a local base URL).
@@ -176,15 +175,15 @@ WordPress + Divi 5 decision recorded in `newsroom-docs/product/tech-stack.md`.
 ## 6a. cPanel checklist for Grant (about 20 minutes, on the existing 3dmusketeers.com account; nothing to buy)
 
 1. cPanel > Domains > Create a New Domain: `mnn.3dmusketeers.com` (or the name you prefer), untick "Share
-   document root", document root `/home/<cpanel-user>/mnn.3dmusketeers.com`. 3DM's user is `ndmusk5`
-   (confirm). Never point it at the 3DM site folder.
+   document root", document root `/home/<cpanel-user>/mnn.3dmusketeers.com`. Use the 3DM cPanel user name
+   (Grant knows it; it is deliberately not written here). Never point it at the 3DM site folder.
 2. DNS: 3dmusketeers.com is on Cloudflare, so add a DNS record there for the subdomain (A record to the
    server IP, same as the apex, or a CNAME to the apex). Then cPanel > SSL/TLS Status > Run AutoSSL.
 3. cPanel > FTP Accounts: create one account whose directory is exactly that document root and nothing
    above it. Never reuse the 3DM deploy account.
 4. GitHub > makernewsnetwork-website > Settings > Secrets and variables > Actions: add `FTP_HOST` (the
    server hostname 3DM already uses), `FTP_USERNAME`, `FTP_PASSWORD`. Then Actions > Deploy > Run workflow.
-   Open https://mnn.3dmusketeers.com/ : the preview gate should appear; the word is "layerline".
+   Open https://mnn.3dmusketeers.com/ : the preview gate should appear. The word is kept off GitHub (section 9).
 5. cPanel > MySQL Databases: create database `<user>_mnn` and a user with ALL privileges on it.
 6. In cPanel File Manager, inside the preview folder, create `api/config.php` from `api/config.example.php`
    (every define; `APP_URL` = https://mnn.3dmusketeers.com with no trailing slash; a 64-hex `AUTH_SECRET`;
@@ -213,7 +212,7 @@ host-aware rules already treat makernewsnetwork.com as production with no code c
 
 1. ANSWERED: a preview subdomain on the 3DM cPanel account, no MNN hosting bought. Confirm the subdomain name (suggested mnn.3dmusketeers.com).
 2. ANSWERED: notes stay in the repo for now.
-3. The 3DM cPanel account has a WordPress database `wp470` labeled "3dmreviews". Anything MNN should inherit?
+3. The 3DM cPanel account has an old WordPress reviews database. Anything MNN should inherit? (name kept private)
 4. Logo: PARKED.
 5. Carried over from the docs: Discord login method, download manager, filament blocked metrics now or
    later, who approves sponsorship deals, pulse threshold and sign-off, FibreSeeker Gen 2 vs Gen 3, fate
@@ -256,3 +255,28 @@ configured sendmail; on cPanel it works out of the box).
 
 House rules carried from 3DM: ASCII only in every source file; no street address or exterior photos
 anywhere; secrets never in git and never typed by an agent; run inline-includes after any nav/footer edit.
+
+## 9. Launch-pack sync (2026-11-05, branch claude/launch-pack-sync, PR open, do not merge until Grant says go)
+
+Done:
+- Comments, accounts, sign-in and moderation are OFF by default behind ONE switch: `site-config.json`
+  (`"comments": false`). Pages ship the comment parts hidden; `assets/mnn-comments.js` and the moderation page read
+  the switch; every account PHP endpoint answers 503 while it is false (CLI exempt, cron is a no-op). All code kept.
+  To turn on later: set it to `true`, then do the server steps in 6a (MySQL, cron, OAuth apps). Tested both ways under php -S.
+  `/sign-in/` is out of the sitemap while off. Home page and /standards/ now say comments come after launch.
+- Copy brought up to date with the launch pack: launch January 1, 2027 with a soft launch the last week of December
+  2026; article types First look (2-4 weeks) / Full review (about 3 months) / 6-month follow-up (review template, sample
+  review, home and reviews cards, how-we-test; `node tools/new-page.js review <cat> "Title" "Maker" [first-look|full-review|follow-up]`);
+  "no review publishes until every metric can be measured" added to how-we-test.
+- Sensitive details removed from current files (git history still has them while the repo is public): the old gate word,
+  the cPanel user name, the WordPress database name, the consolidated brief in notes/, the internal "open items" blocks on
+  /terms/ and /privacy/ (they named a competitor and the DMCA agent plan), and on /standards/ the affiliate-vs-verdict
+  rule, the community-sentiment section, the personal-history line and the company name. Footer, /about/ and /standards/
+  no longer name the company (E1: decide later); the draft /terms/ and /privacy/ still do and are attorney territory.
+- The gate word was changed. The page now stores only a SHA-256 hash (`tools/gate-hash.js` makes a new one). The new word
+  is in Grant's private folder (.claude-private, file mnn-preview-gate-word.txt). Anyone who knew the old word needs the new one.
+- Fixed a phone overflow on review pages (`.review-layout` grid column) and a Windows path bug in `tools/build-sitemap.js`.
+
+Not done / for Grant: the repo is still public. /standards/ vs the launch-pack draft: which is master is still open.
+The old gate word, cPanel user and database names remain in git history. `tools/verify-live.js` crashed on this Windows
+box after 3 checks (Node 24 libuv assert), so it was not run to the end.

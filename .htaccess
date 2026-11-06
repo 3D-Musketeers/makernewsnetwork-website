@@ -43,6 +43,10 @@ RewriteRule \.(php[0-9]?|phtml|phar|phps)(/|$) - [NC,R=404,L]
 </FilesMatch>
 
 <IfModule mod_headers.c>
+  # The comments switch must take effect at once on every host.
+  <FilesMatch "^site-config\.json$">
+    Header set Cache-Control "no-store"
+  </FilesMatch>
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"

@@ -10,6 +10,7 @@
   'use strict';
   var root = document.getElementById('mnn-comments');
   if (!root) return;
+  // Comments are OFF unless /site-config.json says "comments": true. Pages ship the comment parts hidden.
   var slug = root.getAttribute('data-slug') || (location.pathname.replace(/index\.html$/, ''));
   var countEl = document.querySelector('[data-comment-count]');
   var signinOnly = root.hasAttribute('data-signin-only');
@@ -126,5 +127,13 @@
       state.user = j.user; state.comments = j.comments; render();
     }).catch(function () { root.textContent = ''; root.appendChild(el('p', 'soft', 'Comments are not available right now.')); });
   }
-  load();
+  fetch('/site-config.json', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .catch(function () { return {}; })
+    .then(function (cfg) {
+      if (!cfg || cfg.comments !== true) return;
+      document.querySelectorAll('[data-comments-feature]').forEach(function (e) { e.hidden = false; });
+      document.querySelectorAll('[data-comments-off]').forEach(function (e) { e.hidden = true; });
+      load();
+    });
 })();

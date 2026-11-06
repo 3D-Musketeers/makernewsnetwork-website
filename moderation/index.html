@@ -62,6 +62,7 @@
   </section>
   <section class="section">
     <div class="wrap">
+      <div class="banner info" data-comments-off><span aria-hidden="true">i</span><span><b>Moderation is switched off.</b> Comments and accounts are off until after launch (see <code>site-config.json</code>).</span></div>
       <div id="mod-gate" class="banner info" hidden><span aria-hidden="true">i</span><span><b>Staff only.</b> <a href="/sign-in/">Sign in</a> with a staff account. A staff role is granted on the server with <code>php api/cli/make-staff.php email</code>.</span></div>
       <div id="mod" hidden>
         <ul class="chips" data-mod-tabs aria-label="Moderation views">
@@ -135,7 +136,9 @@
     load();
   });
   document.getElementById('mod-search').addEventListener('submit', function (e) { e.preventDefault(); q = document.getElementById('mod-q').value.trim(); load(); });
-  load();
+  fetch('/site-config.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (cfg) {
+    if (cfg && cfg.comments === true) { document.querySelector('[data-comments-off]').hidden = true; load(); }
+  });
 })();
 </script>
 
@@ -145,7 +148,7 @@
     <div class="footer-grid">
       <div>
         <h2>Maker News Network</h2>
-        <p>Reviews built on measured data, news that checks its sources, and a comment section where real people talk. By makers, for makers.</p>
+        <p>Reviews built on measured data and news that checks its sources. By makers, for makers.</p>
         <p><a href="mailto:tips@makernewsnetwork.com">tips@makernewsnetwork.com</a></p>
       </div>
       <div>
@@ -180,7 +183,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>(c) <span data-year>2026</span> Maker News Network. Published by 3D Musketeers, LLC.</span>
+      <span>(c) <span data-year>2026</span> Maker News Network.</span>
       <span><a href="/terms/">Terms</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="mailto:legal@makernewsnetwork.com">legal@makernewsnetwork.com</a></span>
     </div>
   </div>
