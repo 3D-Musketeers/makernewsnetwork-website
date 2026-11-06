@@ -22,6 +22,8 @@ f79184c and 54ad5e0) and moved here on 2026-11-05.
 | `assets/mnn-comments.js`, `sign-in/` | Comments widget and the sign-in page |
 | `api/moderation.php`, `moderation/`, `api/cli/make-staff.php` | Staff moderation API and page; CLI to grant the staff role |
 | `gate.html` | Preview gate for every non-production host (anything but makernewsnetwork.com) |
+| `site-config.json` | The ONE switch for comments, sign-in and moderation (false at launch) |
+| `tools/gate-hash.js` | Makes the SHA-256 hash of a new preview gate word |
 | `tools/build-sitemap.js`, `tools/verify-live.js` | Sitemap generator and the launch/QA check |
 | `tools/new-page.js`, `tools/templates/` | Scaffold a new review or article page |
 | `api/submit.php` | Reader submission endpoint (email only, honeypot, throttle, no IP stored). Needs `api/config.php` on the server |

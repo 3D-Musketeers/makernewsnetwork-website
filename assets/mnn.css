@@ -252,7 +252,7 @@ table.data .flag { color: var(--accent-2); font-weight: 700; }
 .review-facts { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; margin: 1rem 0 0; padding: 0; list-style: none; font-size: .9rem; color: var(--text-soft); }
 .review-facts b { color: var(--text); }
 .review-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 2.5rem; align-items: start; }
-@media (max-width: 960px) { .review-layout { grid-template-columns: 1fr; } }
+@media (max-width: 960px) { .review-layout { grid-template-columns: minmax(0, 1fr); } }
 .review-toc { position: sticky; top: calc(var(--nav-h) + 1rem); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; background: var(--bg-card); font-size: .9rem; }
 .review-toc h2 { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-soft); margin: 0 0 .6rem; }
 .review-toc ol { margin: 0; padding-left: 1.2rem; }

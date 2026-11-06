@@ -8,6 +8,24 @@
  */
 declare(strict_types=1);
 
+/**
+ * ONE switch for comments, accounts, sign-in and moderation: "comments" in /site-config.json.
+ * Off by default. When it is off every account endpoint answers 503 before it touches the config or the
+ * database (the CLI is exempt so Grant can still run make-staff before switching on). No code is removed.
+ */
+function comments_enabled(): bool
+{
+    $f = dirname(__DIR__, 2) . '/site-config.json';
+    $j = is_file($f) ? json_decode((string) file_get_contents($f), true) : null;
+    return is_array($j) && ($j['comments'] ?? false) === true;
+}
+if (PHP_SAPI !== 'cli' && !comments_enabled()) {
+    http_response_code(503);
+    header('Content-Type: application/json');
+    echo json_encode(['ok' => false, 'error' => 'Comments and accounts are not open yet', 'comments_off' => true]);
+    exit;
+}
+
 $configPath = __DIR__ . '/../config.php';
 if (!file_exists($configPath)) {
     http_response_code(500);

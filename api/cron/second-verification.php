@@ -12,6 +12,8 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../lib/bootstrap.php';
 
+if (!comments_enabled()) { echo "comments are switched off in site-config.json; nothing to do
+"; exit; }
 if (PHP_SAPI !== 'cli') {
     if (!defined('CRON_KEY') || CRON_KEY === '' || !hash_equals(CRON_KEY, (string) ($_GET['key'] ?? ''))) fail('Forbidden', 403);
 }

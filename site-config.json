@@ -1,0 +1,4 @@
+{
+  "_help": "ONE switch for comments, sign-in and moderation. false = off (launch). true = on. Code is kept either way. Used by the pages (assets/mnn-comments.js, moderation page) and by every PHP file in api/ that handles accounts.",
+  "comments": false
+}

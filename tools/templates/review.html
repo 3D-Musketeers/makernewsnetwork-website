@@ -34,7 +34,7 @@
   <article>
     <header class="review-head">
       <div class="wrap">
-        <p class="eyebrow">{{CATEGORY_LABEL}} review &middot; Initial review</p>
+        <p class="eyebrow">{{CATEGORY_LABEL}} review &middot; {{ARTICLE_TYPE}}</p>
         <h1>{{TITLE}}</h1>
         <p class="lede">{{LEDE}}</p>
         <ul class="review-facts">
@@ -42,9 +42,12 @@
           <li><b>Price at review</b> <span class="num">[price] USD</span></li>
           <li><b>Tested</b> <time datetime="2026-00-00">[date]</time></li>
           <li><b>Reviewer</b> [name]</li>
+          <li><b>Article type</b> {{ARTICLE_TYPE}}</li>
           <li><b>Follow-up due</b> [date + 6 months]</li>
         </ul>
 
+        <!-- Article types (Grant, 2026-11-05): First look (2 to 4 weeks of testing), Full review (about 3 months), 6-month follow-up.
+             Change the eyebrow, the Article type fact and the follow-up text when this page becomes a full review or a follow-up. -->
         <!-- Sponsored banner: shown only when the review's Sponsored flag is true. Above the fold, never fine print. -->
         <div class="banner" hidden data-sponsored>
           <span aria-hidden="true">!</span>
@@ -133,20 +136,20 @@
         </section>
 
         <section class="review-section" id="followup" aria-labelledby="h-followup">
-          <h2 id="h-followup">Six-month follow-up</h2>
-          <div class="banner info"><span aria-hidden="true">i</span><span><b>Scheduled.</b> We re-run reliability, re-check nozzle hardness and wear, and log firmware changes since launch. The follow-up links back here, and this page links forward to it when it publishes.</span></div>
+          <h2 id="h-followup">Full review and six-month follow-up</h2>
+          <div class="banner info"><span aria-hidden="true">i</span><span><b>Scheduled.</b> This is a first look after [N] weeks of testing. Our full review follows in about three months. At six months we re-run reliability, re-check nozzle hardness and wear, and log firmware changes. The follow-up is added to this article and we expect to publish it as a short article of its own too; each links to the other.</span></div>
         </section>
 
         <section class="review-section" id="buy" aria-labelledby="h-buy">
           <h2 id="h-buy">Where to buy</h2>
-          <p class="soft small">Some links are affiliate links. We may earn a commission at no cost to you. The verdict above was written before any retailer link was chosen. <a href="/standards/#disclosure">Disclosure</a>.</p>
+          <p class="soft small">Some links are affiliate links. We may earn a commission at no cost to you. <a href="/standards/#disclosure">Disclosure</a>.</p>
           <div class="buy">
             <a href="#" rel="sponsored noopener">Prusa Research (direct) <span class="price">[price]</span></a>
             <a href="#" rel="sponsored noopener">[Retailer 2] <span class="price">[price]</span></a>
           </div>
         </section>
 
-        <section class="review-section" id="comments" aria-labelledby="h-comments">
+        <section class="review-section" id="comments" aria-labelledby="h-comments" hidden data-comments-feature>
           <h2 id="h-comments">Comments <span class="tag neutral" aria-live="polite" data-comment-count>0</span></h2>
           <div id="mnn-comments" data-slug="{{SLUG}}">
             <noscript><p class="soft">Comments need JavaScript.</p></noscript>
@@ -163,9 +166,9 @@
           <li><a href="#data">Data</a></li>
           <li><a href="#files">Test files</a></li>
           <li><a href="#verdict">Verdict</a></li>
-          <li><a href="#followup">Six-month follow-up</a></li>
+          <li><a href="#followup">Full review and follow-up</a></li>
           <li><a href="#buy">Where to buy</a></li>
-          <li><a href="#comments">Comments</a></li>
+          <li hidden data-comments-feature><a href="#comments">Comments</a></li>
         </ol>
       </aside>
     </div>
