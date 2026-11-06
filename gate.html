@@ -37,7 +37,7 @@
     // Only the SHA-256 of the word is stored here (the word itself is not in the repo). To change the word:
     // run  node tools/gate-hash.js "new word"  and paste the hash below.
     var EXPECTED_HASH = 'ee2618d34c5e80af3b0c1f5ad7d3c7ea2ef11b4a00d392e84e9502daf6863785';
-    if (!(window.crypto && crypto.subtle)) { document.getElementById('err').textContent = 'This page needs https.'; document.getElementById('err').style.display = 'block'; return; }
+    if (!(window.crypto && crypto.subtle)) { document.getElementById('err').textContent = 'This preview needs a secure (https) address to check the word. Open the https link, or ask us for access.'; document.getElementById('err').style.display = 'block'; return; }
     crypto.subtle.digest('SHA-256', new TextEncoder().encode(entered)).then(function (buf) {
     var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
     if (hex === EXPECTED_HASH) {
